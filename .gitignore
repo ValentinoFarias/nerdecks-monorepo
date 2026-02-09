@@ -1,0 +1,20 @@
+# Python virtual env
+.venv/
+
+# Django / Python artifacts
+__pycache__/
+*.py[cod]
+*.pyo
+
+# SQLite DB (local only, not for production)
+db.sqlite3
+
+# Env / secrets
+.env
+env.py
+
+# Static files collected by Django
+staticfiles/
+
+# VS Code
+.vscode/
