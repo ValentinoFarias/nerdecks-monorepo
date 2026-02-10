@@ -23,61 +23,80 @@
 						style="height: 32px; width: auto;"
 					>
 				</a>
-				<div class="d-flex gap-2">
-					<a href="{% url 'signup' %}" class="btn btn-primary">Sign up</a>
-					<a href="#" class="btn btn-outline-secondary">Log in</a>
-				</div>
+                <div class="d-flex gap-2">
+                    {% if user.is_authenticated %}
+						<a href="{% url 'logout' %}" class="btn btn-outline-secondary">Log out</a>
+                    {% else %}
+                        <a href="{% url 'signup' %}" class="btn btn-primary">Sign up</a>
+                        <a href="{% url 'login' %}" class="btn btn-outline-secondary">Log in</a>
+                    {% endif %}
+                </div>
 			</div>
 		</header>
 
 		<main class="flex-grow-1">
+            {% if messages %}
+                <div class="container mt-3">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
 			<section class="py-5">
 				<div class="container">
 					<h1 class="text-center mb-4">How it works?</h1>
-					<div class="row g-4">
-						<div class="col-md-4">
-							<div class="card h-100 shadow-sm">
-								<div class="card-body">
-									<h2 class="h5 mb-2">1. Create decks</h2>
-									<p class="mb-0 text-muted">
-										Organize your subjects into decks so every topic has its own
-										space.
-									</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="card h-100 shadow-sm">
-								<div class="card-body">
-									<h2 class="h5 mb-2">2. Add cards</h2>
-									<p class="mb-0 text-muted">
-										Create flashcards with questions and answers, hints, and
-										anything else you need.
-									</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="card h-100 shadow-sm">
-								<div class="card-body">
-									<h2 class="h5 mb-2">3. Review & repeat</h2>
-									<p class="mb-0 text-muted">
-										Review cards regularly using spaced repetition and keep
-										knowledge fresh.
-									</p>
-								</div>
-							</div>
-						</div>
-					</div>
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <h2 class="h5 mb-2">Step 1 - Create decks</h2>
+                                    <p class="mb-0 text-muted">
+                                        Create a deck for any topic you're learning. Keep things broad or get specific—it's your space.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <h2 class="h5 mb-2">Step 2 - Add flashcards!</h2>
+                                    <p class="mb-0 text-muted">
+                                        Each flashcard has a question on one side and an answer on the other. Add one idea per card to make learning easier.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <h2 class="h5 mb-2">Step 3 - Review & repeat!</h2>
+                                    <p class="mb-0 text-muted">
+                                        Review in short, focused sessions. Mark each card as Got it right or Got it wrong—NerDeck's spaced repetition system takes care of the rest.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 				</div>
 			</section>
+            <section class="py-5 bg-white">
+                <div class="container text-center">
+                    <h2 class="mb-4">What is spaced repetition system?</h2>
+                    <p class="mb-4 text-muted">
+                        Spaced repetition is a learning technique that helps you remember information more effectively by reviewing it at increasing intervals over time. The idea is to review material just before you're likely to forget it, which strengthens your memory and helps you retain information for the long term. </p>
+                    <div><a href="{% url 'signup' %}" class="btn btn-primary btn-lg">Create your account!</a></div>    
+                </div>
 		</main>
 
-		<footer class="py-3 bg-white border-top mt-auto">
-			<div class="container text-center text-muted small">
-				&copy; Nerdeck
-			</div>
-		</footer>
+        <footer class="py-4 bg-white border-top mt-auto">
+            <div class="container text-center text-muted small">
+                &copy; NerDeck 
+            </div>
+        </footer>
 
 		<script
 			src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
