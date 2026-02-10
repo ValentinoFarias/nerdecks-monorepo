@@ -18,6 +18,19 @@ class EmailSignupForm(forms.ModelForm):
         model = User
         fields = ["email"]
 
+    def clean_email(self):
+        email = self.cleaned_data.get("email", "").strip().lower()
+        if not email:
+            return email
+
+        # Since we use email as the username, ensure it is unique.
+        if User.objects.filter(username=email).exists():
+            raise forms.ValidationError(
+                "An account with this email already exists. Please log in instead."
+            )
+
+        return email
+
     def clean(self):
         cleaned_data = super().clean()
         password1 = cleaned_data.get("password1")
@@ -30,8 +43,10 @@ class EmailSignupForm(forms.ModelForm):
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        # Use the email as the username internally so username is not asked for.
-        user.username = self.cleaned_data["email"]
+        # Use normalized email as the username internally so username is not asked for.
+        email = self.cleaned_data["email"].strip().lower()
+        user.username = email
+        user.email = email
         user.set_password(self.cleaned_data["password1"])
 
         if commit:
