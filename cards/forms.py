@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from .models import Card
 
 
 class EmailSignupForm(forms.ModelForm):
@@ -53,3 +54,9 @@ class EmailSignupForm(forms.ModelForm):
             user.save()
 
         return user
+
+
+class CardForm(forms.ModelForm):
+    class Meta:
+        model = Card
+        fields = ["front_text", "back_text"]

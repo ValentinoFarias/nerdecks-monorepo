@@ -41,7 +41,6 @@ class Card(models.Model):
     deck = models.ForeignKey(Deck, on_delete=models.CASCADE)
     front_text = models.TextField()
     back_text = models.TextField()
-    hint_text = models.TextField(blank=True)
     status = models.CharField(
         max_length=10,
         choices=STATUS_CHOICES,

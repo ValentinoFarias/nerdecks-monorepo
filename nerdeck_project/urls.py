@@ -10,6 +10,9 @@ from cards.views import (
     create_deck,
     delete_deck,
     deck_flashcards,
+    new_flashcard,
+    study_deck,
+    review_answer,
 )
 
 urlpatterns = [
@@ -19,6 +22,9 @@ urlpatterns = [
     path("decks/create/", create_deck, name="create_deck"),
     path("decks/delete/", delete_deck, name="delete_deck"),
     path("decks/<int:deck_id>/", deck_flashcards, name="deck_flashcards"),
+    path("decks/<int:deck_id>/new/", new_flashcard, name="new_flashcard"),
+    path("decks/<int:deck_id>/study/", study_deck, name="study"),
+    path("decks/<int:deck_id>/review/answer/", review_answer, name="review_answer"),
     path("login/", auth_views.LoginView.as_view(template_name="login.html"), name="login"),
     path("logout/", logout_view, name="logout"),
     path("signup/", SignupView.as_view(), name="signup"),
