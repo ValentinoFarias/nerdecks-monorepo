@@ -47,43 +47,87 @@
                 </div>
             {% endif %}
 
-			<section class="py-5">
-				<div class="container">
-					<h1 class="text-center mb-4">How it works?</h1>
+            <section class="py-5">
+                <div class="container">
+                    <h1 class="text-center mb-4">How does it work?</h1>
+
                     <div class="row g-4">
+
+                        <!-- STEP 1 -->
                         <div class="col-12">
                             <div class="card shadow-sm">
                                 <div class="card-body">
-                                    <h2 class="h5 mb-2">Step 1 - Create decks</h2>
-                                    <p class="mb-0 text-muted">
-                                        Create a deck for any topic you're learning. Keep things broad or get specific—it's your space.
-                                    </p>
+                                    <div class="row align-items-center">
+
+                                        <div class="col-md-8">
+                                            <h2 class="h5 mb-2 text-center">Step 1 - Create a deck!</h2>
+                                            <p class="mb-0 text-muted text-center">
+                                                Create a deck for any topic you're learning. Keep things broad or get specific—it's your space.
+                                            </p>
+                                        </div>
+
+                                        <div class="col-md-4 text-center">
+                                            <img src="{% static 'images/Step1.png' %}" 
+                                                 alt="Step 1 - Create decks" 
+                                                 class="img-fluid w-75 mt-2">
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- STEP 2 -->
                         <div class="col-12">
                             <div class="card shadow-sm">
                                 <div class="card-body">
-                                    <h2 class="h5 mb-2">Step 2 - Add flashcards!</h2>
-                                    <p class="mb-0 text-muted">
-                                        Each flashcard has a question on one side and an answer on the other. Add one idea per card to make learning easier.
-                                    </p>
+                                    <div class="row align-items-center">
+
+                                        <div class="col-md-4 text-center">
+                                            <img src="{% static 'images/Step2.png' %}" 
+                                                 alt="Step 2 - Add flashcards" 
+                                                 class="img-fluid w-75 mt-2">
+                                        </div>
+
+                                        <div class="col-md-8">
+                                            <h2 class="h5 mb-2 text-center">Step 2 - Add flashcards!</h2>
+                                            <p class="mb-0 text-muted text-center">
+                                                Each flashcard has a question on one side and an answer on the other. Add one idea per card to make learning easier.
+                                            </p>
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- STEP 3 -->
                         <div class="col-12">
                             <div class="card shadow-sm">
                                 <div class="card-body">
-                                    <h2 class="h5 mb-2">Step 3 - Review & repeat!</h2>
-                                    <p class="mb-0 text-muted">
-                                        Review in short, focused sessions. Mark each card as Got it right or Got it wrong—NerDeck's spaced repetition system takes care of the rest.
-                                    </p>
+                                    <div class="row align-items-center">
+
+                                        <div class="col-md-8">
+                                            <h2 class="h5 mb-2 text-center">Step 3 - Review & repeat!</h2>
+                                            <p class="mb-0 text-muted text-center">
+                                                Review in short, focused sessions. Mark each card as Got it right or Got it wrong—NerDeck's spaced repetition system takes care of the rest.
+                                            </p>
+                                        </div>
+
+                                        <div class="col-md-4 text-center">
+                                            <img src="{% static 'images/Step3.png' %}" 
+                                                 alt="Step 3 - Review & repeat" 
+                                                 class="img-fluid w-75 mt-2">
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
                     </div>
-				</div>
-			</section>
+                </div>
+            </section>
             <section class="py-5 bg-white">
                 <div class="container text-center">
                     <h2 class="mb-4">What is spaced repetition system?</h2>
