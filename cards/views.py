@@ -58,17 +58,19 @@ class DecksView(TemplateView):
                     filter=Q(card__status="active"),
                     distinct=True
                 ),
-                today_cards=Count(
-                    "card",
-                    filter=Q(
-                        card__status="active",
-                        card__cardsrs__due_at__lte=end_of_today,
-                    ),
-                    distinct=True
-                ),
             )
             .order_by("created_at")
         )
+
+        decks = list(decks)
+
+        for deck in decks:
+            deck.today_cards = Card.objects.filter(
+                deck=deck,
+                status="active",
+            ).filter(
+                Q(cardsrs__due_at__lte=end_of_today) | Q(cardsrs__isnull=True)
+            ).count()
 
         context["decks"] = decks
         return context
