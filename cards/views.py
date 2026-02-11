@@ -8,7 +8,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from django.utils import timezone
-from django.db.models import Q
+from django.db.models import Q, Count
 import json
 
 from .forms import EmailSignupForm, CardForm
@@ -45,7 +45,32 @@ class DecksView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["decks"] = Deck.objects.filter(user=self.request.user, is_archived=False).order_by("created_at")
+
+        now = timezone.localtime()
+        end_of_today = now.replace(hour=23, minute=59, second=59, microsecond=999999)
+
+        decks = (
+            Deck.objects
+            .filter(user=self.request.user, is_archived=False)
+            .annotate(
+                total_cards=Count(
+                    "card",
+                    filter=Q(card__status="active"),
+                    distinct=True
+                ),
+                today_cards=Count(
+                    "card",
+                    filter=Q(
+                        card__status="active",
+                        card__cardsrs__due_at__lte=end_of_today,
+                    ),
+                    distinct=True
+                ),
+            )
+            .order_by("created_at")
+        )
+
+        context["decks"] = decks
         return context
 
 
@@ -77,11 +102,12 @@ def new_flashcard(request, deck_id):
 @login_required
 def study_deck(request, deck_id):
     deck = get_object_or_404(Deck, id=deck_id, user=request.user, is_archived=False)
-    now = timezone.now()
+    now = timezone.localtime()
+    end_of_today = now.replace(hour=23, minute=59, second=59, microsecond=999999)
 
     due_cards = (
         Card.objects.filter(deck=deck, status="active")
-        .filter(Q(cardsrs__due_at__lte=now) | Q(cardsrs__isnull=True))
+        .filter(Q(cardsrs__due_at__lte=end_of_today) | Q(cardsrs__isnull=True))
         .select_related("cardsrs")
         .order_by("created_at")
     )
@@ -121,6 +147,9 @@ def review_answer(request, deck_id):
         payload = json.loads(request.body.decode("utf-8"))
     except json.JSONDecodeError:
         return JsonResponse({"error": "Invalid JSON"}, status=400)
+
+    now = timezone.localtime()
+    end_of_today = now.replace(hour=23, minute=59, second=59, microsecond=999999)
 
     card_id = payload.get("card_id")
     is_right = payload.get("is_right")
@@ -165,7 +194,7 @@ def review_answer(request, deck_id):
 
     srs.save()
 
-    due_filter = Q(cardsrs__due_at__lte=timezone.now()) | Q(cardsrs__isnull=True)
+    due_filter = Q(cardsrs__due_at__lte=end_of_today) | Q(cardsrs__isnull=True)
 
     next_card = (
         Card.objects.filter(

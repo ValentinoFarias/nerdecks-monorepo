@@ -57,7 +57,7 @@
 						<thead class="table-light">
 							<tr>
 								<th scope="col">NerDecks</th>
-								<th scope="col">Today</th>
+								<th scope="col">Due today</th>
 								<th scope="col">Total</th>
 							</tr>
 						</thead>
@@ -70,8 +70,8 @@
 												{{ deck.title }}
 											</a>
 										</td>
-										<td class="text-muted">0</td>
-										<td class="text-muted">0</td>
+										<td class="text-muted">{{ deck.today_cards|default:0 }}</td>
+										<td class="text-muted">{{ deck.total_cards|default:0 }}</td>
 									</tr>
 								{% endfor %}
 							{% else %}
