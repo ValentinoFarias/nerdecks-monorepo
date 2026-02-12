@@ -45,32 +45,25 @@
         <hero class="py-4">
             <div class="container">
                 <div class="card shadow-sm">
-                    <div class="card-body">
+                    <!-- Hero section: text over fixed 16:9 area, swaps to video on click -->
+                    <div class="card-body text-center py-5">
                         <div class="row align-items-center">
-                            <div class="col-md-6 mb-3 mb-md-0">
-                                <h1 class="mb-3 text-center hero-title">Welcome to <span style="font-family: 'Fredoka'; font-size: 7rem; color: #000000; font-weight: 500;">Ner<span style="font-family: 'Fredoka'; font-size: 7rem; color: #E3B46D;">D</span>ecks!</span></h1>
-                            </div>
-                            <div class="col-md-6">
+                            <div class="col-md-8 col-lg-6 mx-auto">
                                 <div class="ratio ratio-16x9 mb-2 position-relative">
-                                    <video id="heroVideo" class="w-100 h-100" poster="{% static 'images/logo_nerdeck.png' %}">
-                                        <source src="{% static 'videos/nerdeck_intro_video.mp4' %}" type="video/mp4">
+                                    <div id="heroTextTrigger" class="hero-text-trigger hero-text-overlay">
+                                        <h1 class="hero-title mb-2">NERDECKS</h1>
+                                    </div>
+
+                                    <video id="heroVideo" class="w-100 h-100 d-none" poster="{% static 'images/tv.png' %}">
+                                        <source src="{% static 'videos/video_tv_cc.mp4' %}" type="video/mp4">
                                         Your browser does not support the video tag.
                                     </video>
                                     <button
                                         id="overlayPlayHeroVideo"
-                                        class="btn btn-play-overlay"
+                                        class="btn btn-play-overlay d-none"
                                         type="button"
                                     >
                                         &#9658;
-                                    </button>
-                                </div>
-                                <div class="hero-pause-row d-flex justify-content-center gap-2">
-                                    <button
-                                        id="pauseHeroVideo"
-                                        class="btn btn-outline-secondary btn-pause-icon pause-hidden"
-                                        type="button"
-                                    >
-                                        &#10074;&#10074;
                                     </button>
                                 </div>
                             </div>

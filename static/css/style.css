@@ -1,4 +1,9 @@
-/* Global styles for Nerdeck */
+/*
+ * Global page defaults:
+ * - base font
+ * - background color
+ * - default text color
+ */
 
 body {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -6,29 +11,88 @@ body {
   color: #212529;
 }
 
+/* Brand text in the navbar */
 .navbar-brand {
   font-weight: 700;
 }
 
+/* Primary button color overrides (uses Bootstrap .btn-primary) */
 .btn-primary {
   background-color: #0d6efd;
   border-color: #0d6efd;
 }
 
-/* Custom styles for the landing page */
+/*
+ * Make the hero text fill the 16:9 area and center it:
+ * - absolute layering inside the ratio container
+ * - full width/height
+ * - centered content with flexbox
+ */
+.hero-text-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+}
+
+/*
+ * Hero text hover state:
+ * - show hand cursor
+ * - change color and add shadow on hover
+ */
+.hero-text-overlay {
+  cursor: pointer;
+}
+
+.hero-text-overlay:hover .hero-title {
+  color: #E3B46D !important;
+  text-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25);
+}
+
+/*
+ * (No longer used in the current hero markup)
+ * Kept for reference: hides video visually but keeps its layout space.
+ */
+.hero-video-hidden {
+  visibility: hidden;
+}
+
+/* Landing page logo wordmark "NerDecks" on the hero */
 #nerdeckLogoName {
   font-family: "Fredoka";
   font-size: 3rem;
   color: #000000;
+  cursor: pointer; /* show hand cursor on hover */
+  transition: color 0.2s ease, text-shadow 0.2s ease;
 }
 
-/* Custom styles for the main content */
+/* Make inner link follow the heading color and remove underline */
+#nerdeckLogoName a {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer; /* ensure hand cursor directly on the text */
+}
+
+#nerdeckLogoName:hover,
+#nerdeckLogoName:hover a {
+  color: #E3B46D !important; /* hover color you requested */
+  text-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.25); /* subtle depth/shadow */
+}
+
+/* Headings inside the main home content section */
 #main-home-content h1,
 #main-home-content h2 {
   font-family: "Space Grotesk";
   color: #000000;
 }
 
+/* Large hero title used in the hero text */
 .hero-title {
 	font-family: "Space Grotesk";
   color: #000000;
@@ -36,7 +100,11 @@ body {
   font-weight: 700;
 }
 
-/* Hero video */
+/*
+ * Hero video element:
+ * - stretches to fill the ratio container
+ * - "contain" keeps full video visible with letterboxing
+ */
 #heroVideo {
   width: 100%;
   height: 100%;
@@ -44,6 +112,11 @@ body {
   background-color: #ffffff;
 }
 
+/*
+ * Circular play button overlay on top of the hero video:
+ * - centered with translate
+ * - custom size, color, and shadow
+ */
 .btn-play-overlay {
   position: absolute;
   top: 50%;
@@ -62,18 +135,10 @@ body {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.25);
 }
 
+/* Hover state for the hero play button */
 .btn-play-overlay:hover {
   background-color: #ffc107;
   border-color: #ffc107;
   color: #f6f3f3;
-}
-
-.hero-pause-row {
-	min-height: 56px;
-}
-
-.btn-pause-icon.pause-hidden {
-	opacity: 0;
-	pointer-events: none;
 }
 

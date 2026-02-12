@@ -21,17 +21,17 @@
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
 	</head>
 	<body class="d-flex flex-column min-vh-100 bg-white">
-        <main class="flex-grow-1 d-flex flex-column justify-content-center align-items-center">
-            <a href="{% url 'home' %}" class="d-inline-block">
-                <img
-                    src="{% static 'images/logo_nerdeck.png' %}"
-                    alt="Nerdeck logo"
-                    class="img-fluid"
-                    style="max-width: 260px; height: auto;"
-                >
-            </a>
-            <h1 class="mt-4" id="nerdeckLogoName">Ner<a href="{% url 'home' %}" style="color: #E3B46D; text-decoration: none;">D</a>ecks</h1>
-        </main>
+		<main class="flex-grow-1 d-flex flex-column justify-content-center align-items-center">
+			<a href="{% url 'home' %}" class="d-inline-block">
+				<img
+					src="{% static 'images/logo_nerdeck.png' %}"
+					alt="Nerdeck logo"
+					class="img-fluid"
+					style="max-width: 260px; height: auto;"
+				>
+			</a>
+			<h1 class="mt-4" id="nerdeckLogoName"><a href="{% url 'home' %}">NerDecks</a></h1>
+		</main>
 
 		<footer class="py-3 text-center text-muted small">
 			&copy; NerDeck 
