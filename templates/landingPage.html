@@ -25,13 +25,20 @@
 		<main class="flex-grow-1 d-flex flex-column justify-content-center align-items-center">
 			<a href="{% url 'home' %}" class="d-inline-block" id="landing-logo-image-link">
 				<img
-					src="{% static 'images/logo_nerdeck.png' %}"
+					src="{% static 'images/logo_verde.png' %}"
 					alt="Nerdeck logo"
 					class="img-fluid"
 					style="max-width: 260px; height: auto;"
 				>
 			</a>
-			<h1 class="mt-4" id="nerdeckLogoName"><a href="{% url 'home' %}" id="landing-logo-text-link">NERDECKS</a></h1>
+			<h1 class="mt-4" id="nerdeckLogoName">
+				<a href="{% url 'home' %}" id="landing-logo-text-link" class="glitch-btn">
+					NERDECKS
+					<span class="slice"></span>
+					<span class="slice"></span>
+					<span class="slice"></span>
+				</a>
+			</h1>
 		</main>
 
 		<footer class="py-3 text-center text-muted small">
@@ -48,40 +55,7 @@
 		<!-- GSAP and page transition logic -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 		<script src="{% static 'js/transition.js' %}"></script>
-		<script>
-		  document.addEventListener('DOMContentLoaded', function () {
-		    var imageLogoLink = document.getElementById('landing-logo-image-link');
-		    var textLogoLink = document.getElementById('landing-logo-text-link');
-
-		    function handleLogoClick(event) {
-		      if (!window.nerdeckTransition || !window.nerdeckTransition.animateTransition) {
-		        return; // Fallback: allow normal navigation
-		      }
-
-		      event.preventDefault();
-		      var targetUrl = event.currentTarget.href;
-
-		      try {
-		        if (window.sessionStorage) {
-		          window.sessionStorage.setItem('runRevealOnNextPage', '1');
-		        }
-		      } catch (e) {
-		        // Ignore sessionStorage errors, just skip reveal-on-next-page
-		      }
-
-		      window.nerdeckTransition.animateTransition().then(function () {
-		        window.location.href = targetUrl;
-		      });
-		    }
-
-		    if (imageLogoLink) {
-		      imageLogoLink.addEventListener('click', handleLogoClick);
-		    }
-		    if (textLogoLink) {
-		      textLogoLink.addEventListener('click', handleLogoClick);
-		    }
-		  });
-		</script>
+		<script src="{% static 'js/glitch_effect.js' %}"></script>
 	</body>
 </html>
 

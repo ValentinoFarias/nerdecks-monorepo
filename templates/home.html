@@ -23,29 +23,30 @@
 
         <!-- GSAP + transition logic -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
         <script src="{% static 'js/transition.js' %}"></script>
 	</head>
-    <body class="d-flex flex-column min-vh-100 bg-light">
+    <body class="d-flex flex-column min-vh-100">
         {% include 'transition_overlay.html' %}
         <header class="border-bottom bg-white">
-			<div class="container d-flex align-items-center justify-content-between py-2">
-				<a href="/" class="d-flex align-items-center text-decoration-none">
-					<img
-						src="{% static 'images/logo_nerdeck.png' %}"
-						alt="Nerdeck logo"
-						style="height: 32px; width: auto;"
-					>
-				</a>
+            <div class="container d-flex align-items-center justify-content-between py-2">
+                <a href="/" class="d-flex align-items-center text-decoration-none">
+                    <img
+                        src="{% static 'images/logo_verde.png' %}"
+                        alt="Nerdeck logo"
+                        style="height: 50px; width: auto;"
+                    >
+                </a>
                 <div class="d-flex gap-2">
                     {% if user.is_authenticated %}
-                        <a href="{% url 'decks' %}" class="btn btn-primary">Decks</a>
+                        <a href="{% url 'decks' %}" class="btn btn-primary scramble-text">Decks</a>
                         <a href="{% url 'logout' %}" class="btn btn-outline-secondary">Log out</a>
                     {% else %}
                         <a href="{% url 'signup' %}" class="btn btn-primary">Sign up</a>
                         <a href="{% url 'login' %}" class="btn btn-outline-secondary">Log in</a>
                     {% endif %}
                 </div>
-			</div>
+            </div>
         </header>
         <hero class="py-4">
             <div class="container">
@@ -54,10 +55,17 @@
                     <div class="card-body text-center py-5">
                         <div class="row align-items-center">
                             <div class="col-md-8 col-lg-6 mx-auto">
-                                <div class="ratio ratio-16x9 mb-2 position-relative">
+                                <div class="ratio ratio-16x9 mb-2 position-relative hero-ratio">
                                     <div id="heroTextTrigger" class="hero-text-trigger hero-text-overlay">
-                                        <h1 class="hero-title mb-2">NERDECKS</h1>
-                                    </div>
+                                    <h1 class="hero-title mb-2">
+                                        <span class="glitch-btn">
+                                            NERDECKS
+                                            <span class="slice"></span>
+                                            <span class="slice"></span>
+                                            <span class="slice"></span>
+                                        </span>
+                                    </h1>
+                                </div>
 
                                     <video id="heroVideo" class="w-100 h-100 d-none" poster="{% static 'images/tv.png' %}">
                                         <source src="{% static 'videos/video_tv_cc.mp4' %}" type="video/mp4">
@@ -91,26 +99,26 @@
             {% endif %}
 
             <section class="py-5">
-                <div class="container">
-                    <h1 class="text-center mb-4">How does it work?</h1>
+                <div class="container fade-down">
+                    <h1 class="text-center mb-4 display-1 how-it-works-titl">HOW DOES IT WORK?</h1>
 
                     <div class="row g-4">
 
                         <!-- STEP 1 -->
-                        <div class="col-12">
+                        <div class="col-12 fade-left">
                             <div class="card shadow-sm">
                                 <div class="card-body">
                                     <div class="row align-items-center">
 
                                         <div class="col-md-8">
-                                            <h2 class="h5 mb-2 text-center">Step 1 - Create a deck!</h2>
+                                            <h2 class="h5 mb-2 text-center">STEP 1 - CREATE A DECK!</h2>
                                             <p class="mb-0 text-muted text-center">
                                                 Create a deck for any topic you're learning. Keep things broad or get specific—it's your space.
                                             </p>
                                         </div>
 
                                         <div class="col-md-4 text-center">
-                                            <img src="{% static 'images/Step1.png' %}" 
+                                            <img src="{% static 'images/step1.png' %}" 
                                                  alt="Step 1 - Create decks" 
                                                  class="img-fluid w-75 mt-2">
                                         </div>
@@ -121,19 +129,19 @@
                         </div>
 
                         <!-- STEP 2 -->
-                        <div class="col-12">
+                        <div class="col-12 fade-right">
                             <div class="card shadow-sm">
                                 <div class="card-body">
                                     <div class="row align-items-center">
 
                                         <div class="col-md-4 text-center">
-                                            <img src="{% static 'images/Step2.png' %}" 
+                                            <img src="{% static 'images/step2.png' %}" 
                                                  alt="Step 2 - Add flashcards" 
                                                  class="img-fluid w-75 mt-2">
                                         </div>
 
                                         <div class="col-md-8">
-                                            <h2 class="h5 mb-2 text-center">Step 2 - Add flashcards!</h2>
+                                            <h2 class="h5 mb-2 text-center">STEP 2 - ADD FLASHCARDS!</h2>
                                             <p class="mb-0 text-muted text-center">
                                                 Each flashcard has a question on one side and an answer on the other. Add one idea per card to make learning easier.
                                             </p>
@@ -145,7 +153,7 @@
                         </div>
 
                         <!-- STEP 3 -->
-                        <div class="col-12">
+                        <div class="col-12 fade-left">
                             <div class="card shadow-sm">
                                 <div class="card-body">
                                     <div class="row align-items-center">
@@ -158,7 +166,7 @@
                                         </div>
 
                                         <div class="col-md-4 text-center">
-                                            <img src="{% static 'images/Step3.png' %}" 
+                                            <img src="{% static 'images/step3.png' %}" 
                                                  alt="Step 3 - Review & repeat" 
                                                  class="img-fluid w-75 mt-2">
                                         </div>
@@ -193,6 +201,9 @@
 			integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
 			crossorigin="anonymous"
 		></script>
+        <script src="{% static 'js/fade_effects.js' %}"></script>
+        <script src="{% static 'js/scramble_effect.js' %}"></script>
+        <script src="{% static 'js/glitch_effect.js' %}"></script>
         <script src="{% static 'js/home.js' %}"></script>
 	</body>
 </html>

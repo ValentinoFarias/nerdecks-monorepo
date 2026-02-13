@@ -82,7 +82,7 @@
         { scaleY: 0 },
         {
           scaleY: 1,
-          duration: 1.4,
+          duration: 1.1,
           delay: 0.2,
           stagger: {
             each: 0.1,

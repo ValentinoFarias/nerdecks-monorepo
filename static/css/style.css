@@ -10,6 +10,36 @@ body {
   background-color: #f8f9fa;
   color: #212529;
 }
+/* Scramble text effect styling */
+.scramble-wrapper {
+  display: inline-block;
+  position: relative;
+}
+
+.scramble-text {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 18px;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: #00ff00;
+  white-space: nowrap;
+  position: relative;
+}
+
+.scramble-text::before {
+  content: "Hover über mich!";
+  visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* Primary button hover and focus states */
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: #000000; /* your color */
+  border-color: #000000;
+}
 
 /* Brand text in the navbar */
 .navbar-brand {
@@ -19,8 +49,8 @@ body {
 
 /* Primary button color overrides (uses Bootstrap .btn-primary) */
 .btn-primary {
-  background-color: #0d6efd;
-  border-color: #0d6efd;
+  background-color: #000000;
+  border-color: #000000;
 }
 
 
@@ -28,12 +58,39 @@ body {
 .hero-title {
 	font-family: "Space Grotesk";
   color: #000000;
-  font-size: 7rem; /* pick size you like */
+  font-size: 10rem; /* pick size you like */
   font-weight: 700;
 }
 
+/* Glitch styling for the home hero NERDECKS text */
+.hero-title .glitch-btn {
+  position: relative;
+  display: inline-block;
+  padding: 0 24px;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  background: #ffffff;
+  color: #000000;
+}
 
-/*
+.hero-title .slice {
+  position: absolute;
+  width: 100%;
+  height: 30%;
+  left: 0;
+  background: #ffffff;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.hero-ratio {
+  /* Bootstrap ratio uses this custom property for height */
+  --bs-aspect-ratio: 90%;  /* higher % = taller box (default 56.25% for 16:9) */
+}
+
+
+ /*
  * Make the hero text fill the 16:9 area and center it:
  * - absolute layering inside the ratio container
  * - full width/height
@@ -52,18 +109,7 @@ body {
   background-color: #ffffff;
 }
 
-/*
- * Hero text hover state:
- * - show hand cursor
- * - change color and add shadow on hover
- */
-.hero-text-overlay {
-  cursor: pointer;
-}
 
-.hero-text-overlay:hover .hero-title {
-  color: #f5e77c !important;
-}
 
 /*
  * (No longer used in the current hero markup)
@@ -71,6 +117,14 @@ body {
  */
 .hero-video-hidden {
   visibility: hidden;
+}
+
+/*How it works section title */
+.how-it-works-title {
+  font-family: "Space Grotesk";
+  color: #000000;
+  font-weight: 700;
+  font-size: 7rem;
 }
 
 /* Landing page logo wordmark "NerDecks" on the hero */
@@ -82,10 +136,7 @@ body {
   transition: color 0.2s ease, text-shadow 0.2s ease;
 }
 
-#nerdeckLogoName:hover,
-#nerdeckLogoName:hover a {
-  color: #f5e77c !important; /* hover color you requested */
-}
+
 
 /* Make inner link follow the heading color and remove underline */
 #nerdeckLogoName a {
@@ -95,12 +146,37 @@ body {
 }
 
 
+/* Glitch button effect for the landing page logo text */
+#nerdeckLogoName .glitch-btn {
+  position: relative;
+  display: inline-block;
+  padding: 15px 40px;
+  font-size: 2rem;
+  background: #ffffff;
+  color: #000000;
+  border: none;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+#nerdeckLogoName .slice {
+  position: absolute;
+  width: 100%;
+  height: 20%;
+  left: 0;
+  background: inherit;
+  pointer-events: none;
+  opacity: 0;
+}
+
+
 
 /* Headings inside the main home content section */
 #main-home-content h1,
 #main-home-content h2 {
   font-family: "Space Grotesk";
   color: #000000;
+  font-weight: 700;
 }
 
 
@@ -182,4 +258,5 @@ body.run-reveal .transition-row .block {
   visibility: visible;
   transform: scaleY(1);
 }
+
 
