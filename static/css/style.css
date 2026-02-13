@@ -43,7 +43,7 @@ body {
 
 /* Brand text in the navbar */
 .navbar-brand {
-  font-weight: 700;
+  font-weight: 700 /* make it bold */;
 
 }
 
