@@ -346,6 +346,59 @@ body.run-reveal .transition-row .block {
   box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
 }
 
+.study-main {
+  background:
+    radial-gradient(circle at 15% 20%, rgba(13, 110, 253, 0.1), transparent 40%),
+    radial-gradient(circle at 85% 80%, rgba(25, 135, 84, 0.08), transparent 42%);
+}
+
+.study-shell {
+  background: #ffffff;
+  border: 1px solid #e6ebf2;
+  border-radius: 22px;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.12);
+  padding: 2rem;
+}
+
+.study-kicker {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.study-title {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.1;
+}
+
+.study-deck {
+  color: #475569;
+  font-weight: 500;
+}
+
+.study-deck-name {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #1e3a8a;
+  font-weight: 700;
+}
+
+.study-card {
+  border: 1px solid #dbe4ef;
+  border-radius: 16px;
+}
+
+.study-card .card-body {
+  min-height: 180px;
+}
+
 /* New deck button */
 #createDeckModal .modal-content {
   border-radius: 16px;
@@ -353,6 +406,16 @@ body.run-reveal .transition-row .block {
 }
 
 #createDeckModal .modal-title {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+}
+
+#deleteCardModal .modal-content {
+  border-radius: 16px;
+  border: 1px solid #e6ebf2;
+}
+
+#deleteCardModal .modal-title {
   font-family: "Space Grotesk", sans-serif;
   font-weight: 700;
 }
@@ -481,6 +544,20 @@ body.run-reveal .transition-row .block {
   outline-offset: -2px;
 }
 
+.root-drop-zone td {
+  background: #f8fafc;
+  border-top: 1px dashed #cbd5e1;
+  border-bottom: 1px dashed #cbd5e1;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+.root-drop-zone.root-drop-zone-drop-target td {
+  background-color: #e8f3ff !important;
+  outline: 2px dashed #0d6efd;
+  outline-offset: -2px;
+}
+
 .deck-name {
   font-weight: 600;
   color: #0f172a;
@@ -538,6 +615,39 @@ body.run-reveal .transition-row .block {
   display: inline-block !important;
   visibility: hidden;
   pointer-events: none;
+}
+
+.deck-postit-note {
+  display: inline-block;
+  background: #fff59d;
+  color: #2f2a10;
+  padding: 0.9rem 1.05rem;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.16);
+  transform: rotate(-1.8deg);
+  position: relative;
+  max-width: 320px;
+}
+
+.deck-postit-note::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.deck-postit-note p {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 600;
+  line-height: 1.2;
+  padding-top: 0.5rem;
 }
 
 .deck-radio {

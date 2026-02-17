@@ -39,6 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const deckRows = document.querySelectorAll(".deck-row");
   const folderRows = document.querySelectorAll(".folder-row");
   const folderToggles = document.querySelectorAll(".folder-toggle");
+  const rootDropZone = document.querySelector(".root-drop-zone");
   const dragState = { type: null, deckId: null, folderId: null };
 
   function clearButtons() {
@@ -314,13 +315,15 @@ document.addEventListener("DOMContentLoaded", () => {
     return decodeURIComponent(cookie.split("=")[1]);
   }
 
-  async function organizeDecks(sourceDeckId, targetDeckId, targetFolderId) {
+  async function organizeDecks(sourceDeckId, targetDeckId, targetFolderId, targetRoot = false) {
     // Generic move endpoint:
     // - deck -> deck
     // - deck -> folder
+    // - deck -> root (ungroup)
     const payload = { source_deck_id: sourceDeckId };
     if (targetDeckId) payload.target_deck_id = targetDeckId;
     if (targetFolderId) payload.target_folder_id = targetFolderId;
+    if (targetRoot) payload.target_root = true;
 
     const response = await fetch("/decks/organize/", {
       method: "POST",
@@ -364,6 +367,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Visual cleanup for highlighted drop targets.
     deckRows.forEach((row) => row.classList.remove("deck-row-drop-target"));
     folderRows.forEach((row) => row.classList.remove("folder-row-drop-target"));
+    if (rootDropZone) rootDropZone.classList.remove("root-drop-zone-drop-target");
   }
 
   function resetDragState() {
@@ -373,6 +377,43 @@ document.addEventListener("DOMContentLoaded", () => {
     clearDropStyles();
     deckRows.forEach((row) => row.classList.remove("deck-row-dragging"));
     folderRows.forEach((row) => row.classList.remove("folder-row-dragging"));
+  }
+
+  function moveDeckToUngroupedTop(deckId) {
+    const row = document.querySelector(`.deck-row[data-deck-id="${deckId}"]`);
+    if (!row) return;
+
+    row.dataset.folderId = "";
+    row.classList.remove("d-none");
+
+    const deckNameWrap = row.querySelector("td .d-flex");
+    if (deckNameWrap) {
+      deckNameWrap.classList.remove("ps-4");
+    }
+
+    const folderCell = row.children[3];
+    if (folderCell) {
+      folderCell.classList.add("text-muted");
+      folderCell.textContent = "-";
+    }
+
+    const tbody = row.closest("tbody");
+    if (!tbody) return;
+
+    const rootZone = tbody.querySelector(".root-drop-zone");
+    if (rootZone) {
+      tbody.insertBefore(row, rootZone);
+      return;
+    }
+
+    const firstUngrouped = Array.from(tbody.querySelectorAll(".deck-row")).find(
+      (deckRow) => !deckRow.dataset.folderId
+    );
+    if (firstUngrouped && firstUngrouped !== row) {
+      tbody.insertBefore(row, firstUngrouped);
+    } else {
+      tbody.appendChild(row);
+    }
   }
 
   function getDropSource(event) {
@@ -545,4 +586,32 @@ document.addEventListener("DOMContentLoaded", () => {
       resetDragState();
     });
   });
+
+  if (rootDropZone) {
+    rootDropZone.addEventListener("dragover", (event) => {
+      if (dragState.type !== "deck" || !dragState.deckId) return;
+      event.preventDefault();
+      event.dataTransfer.dropEffect = "move";
+      rootDropZone.classList.add("root-drop-zone-drop-target");
+    });
+
+    rootDropZone.addEventListener("dragleave", () => {
+      rootDropZone.classList.remove("root-drop-zone-drop-target");
+    });
+
+    rootDropZone.addEventListener("drop", async (event) => {
+      event.preventDefault();
+      rootDropZone.classList.remove("root-drop-zone-drop-target");
+
+      const source = getDropSource(event);
+      if (source.type !== "deck" || !source.id) return;
+
+      try {
+        await organizeDecks(source.id, null, null, true);
+        moveDeckToUngroupedTop(source.id);
+      } catch (error) {
+        window.alert(error.message);
+      }
+    });
+  }
 });

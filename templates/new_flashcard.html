@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>NerDeck - New flashcard</title>
+    <title>NerDeck - {% if is_edit_mode %}Edit flashcard{% else %}New flashcard{% endif %}</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,18 +41,28 @@
           <div class="col-12 col-md-9 col-lg-7">
             <section class="new-flashcard-shell">
               <header class="new-flashcard-header text-center">
-                <p class="new-flashcard-kicker mb-2">Create New Card</p>
-                <h1 class="new-flashcard-title mb-2">NEW FLASHCARD</h1>
+                <p class="new-flashcard-kicker mb-2">{% if is_edit_mode %}Edit Card{% else %}Create New Card{% endif %}</p>
+                <h1 class="new-flashcard-title mb-2">{% if is_edit_mode %}EDIT FLASHCARD{% else %}NEW FLASHCARD{% endif %}</h1>
                 <p class="new-flashcard-deck mb-0">
                   for <span class="new-flashcard-deck-name">{{ deck.title }}</span>
                 </p>
               </header>
               <form method="post" class="new-flashcard-form mt-4">
                 {% csrf_token %}
+                {% if is_edit_mode and edit_card %}
+                  <input type="hidden" name="edit_card_id" value="{{ edit_card.id }}">
+                {% endif %}
+                {% if next_target %}
+                  <input type="hidden" name="next" value="{{ next_target }}">
+                {% endif %}
                 {{ form.as_p }}
                 <div class="d-flex justify-content-between mt-4">
-                  <a href="{% url 'decks' %}" class="btn btn-outline-secondary">Cancel</a>
-                  <button type="submit" class="btn btn-primary">Save flashcard</button>
+                  {% if next_target == "study" %}
+                    <a href="{% url 'study' deck.id %}" class="btn btn-outline-secondary">Cancel</a>
+                  {% else %}
+                    <a href="{% url 'decks' %}" class="btn btn-outline-secondary">Cancel</a>
+                  {% endif %}
+                  <button type="submit" class="btn btn-primary">{% if is_edit_mode %}Update flashcard{% else %}Save flashcard{% endif %}</button>
                 </div>
               </form>
             </section>

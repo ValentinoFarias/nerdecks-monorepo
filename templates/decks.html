@@ -66,15 +66,30 @@
 					<form id="create-deck-form" method="post" action="{% url 'create_deck' %}" class="d-inline">
 						{% csrf_token %}
 						<input type="hidden" name="title" id="deck-title-input">
-						<button
-							type="button"
-							class="btn btn-primary"
-							data-bs-toggle="modal"
-							data-bs-target="#createDeckModal"
-						>
-							Create a NerDeck
-						</button>
+						<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createDeckModal">
+  Create a NerDeck
+</button>
+
 					</form>
+					<!-- Create Deck Modal: prompts user for new deck title -->
+					 <div class="modal fade" id="createDeckModal" tabindex="-1" aria-labelledby="createDeckModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="createDeckModalLabel">Create a NerDeck</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <label for="newDeckNameInput" class="form-label">NerDeck name</label>
+        <input id="newDeckNameInput" type="text" class="form-control" maxlength="255" placeholder="e.g. Biology - Chapter 1">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="confirmCreateDeckBtn">Create</button>
+      </div>
+    </div>
+  </div>
+</div>
 				</div>
 				<!-- Table listing all decks with counts for due and total cards -->
 				<div class="row justify-content-center">
@@ -291,11 +306,21 @@
 									<td class="text-muted">-</td>
 								</tr>
 							{% endif %}
-						</tbody>
-							</table>
+							<tr class="root-drop-zone" data-drop-root="true">
+								<td colspan="6" class="text-muted">
+									Drop here to ungroup this NerDeck
+								</td>
+							</tr>
+							</tbody>
+								</table>
+							</div>
+							<div class="d-flex justify-content-end mt-3">
+								<div class="deck-postit-note">
+									<p class="mb-0">Drag and Drop two NerDecks to create a folder!</p>
+								</div>
+							</div>
 						</div>
 					</div>
-				</div>
 				<!-- Button opens modal to delete an existing deck -->
 				<div class="text-center mt-3">
 					<button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteDeckModal">
@@ -304,32 +329,6 @@
 				</div>
 			</div>
 		</main>
-
-		<!-- Create Deck Modal -->
-		<div class="modal fade" id="createDeckModal" tabindex="-1" aria-labelledby="createDeckModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-centered">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="createDeckModalLabel">Create a NerDeck</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
-						<label for="newDeckNameInput" class="form-label">NerDeck name</label>
-						<input
-							id="newDeckNameInput"
-							type="text"
-							class="form-control"
-							maxlength="255"
-							placeholder="e.g. Biology - Chapter 1"
-						>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-						<button type="button" class="btn btn-primary" id="confirmCreateDeckBtn">Create</button>
-					</div>
-				</div>
-			</div>
-		</div>
 
 		<!-- Delete Deck Modal: lets the user pick and confirm a deck to delete -->
 		<div class="modal fade" id="deleteDeckModal" tabindex="-1" aria-labelledby="deleteDeckModalLabel" aria-hidden="true">

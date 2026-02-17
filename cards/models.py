@@ -22,6 +22,7 @@ class Deck(models.Model):
         null=True,
         blank=True
     )
+    sort_order = models.IntegerField(default=0)
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     is_archived = models.BooleanField(default=False)

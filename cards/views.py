@@ -98,7 +98,7 @@ class DecksView(TemplateView):
                     distinct=True,
                 ),
             )
-            .order_by("created_at")
+            .order_by("sort_order", "created_at")
         )
 
         decks = list(decks)
@@ -136,22 +136,49 @@ class DecksView(TemplateView):
 
 @login_required
 def new_flashcard(request, deck_id):
-    """Create a new flashcard inside the given deck."""
+    """Create a new flashcard or edit an existing one inside the given deck."""
 
     deck = get_object_or_404(Deck, id=deck_id, user=request.user, is_archived=False)
+    edit_card_id = request.POST.get("edit_card_id") or request.GET.get("card_id")
+    card_to_edit = None
+    is_edit_mode = False
+
+    if edit_card_id:
+        card_to_edit = get_object_or_404(
+            Card,
+            id=edit_card_id,
+            deck=deck,
+            deck__user=request.user,
+        )
+        is_edit_mode = True
+
+    next_target = request.POST.get("next") if request.method == "POST" else request.GET.get("next", "")
 
     if request.method == "POST":
-        form = CardForm(request.POST)
+        form = CardForm(request.POST, instance=card_to_edit)
         if form.is_valid():
             card = form.save(commit=False)
             card.deck = deck
             card.save()
-            messages.success(request, "Flashcard created.")
+
+            if is_edit_mode:
+                messages.success(request, "Flashcard updated.")
+            else:
+                messages.success(request, "Flashcard created.")
+
+            if next_target == "study":
+                return redirect("study", deck_id=deck.id)
             return redirect("decks")
     else:
-        form = CardForm()
+        form = CardForm(instance=card_to_edit)
 
-    return render(request, "new_flashcard.html", {"deck": deck, "form": form})
+    return render(request, "new_flashcard.html", {
+        "deck": deck,
+        "form": form,
+        "is_edit_mode": is_edit_mode,
+        "edit_card": card_to_edit,
+        "next_target": next_target,
+    })
 
 
 # ---------------------------------------------------------------------------
@@ -283,6 +310,43 @@ def review_answer(request, deck_id):
 
     response = {"ok": True}
 
+    if next_card is not None:
+        response["next_card"] = {
+            "id": next_card.id,
+            "front_text": next_card.front_text,
+            "back_text": next_card.back_text,
+            "due_at": next_card.cardsrs.due_at.isoformat() if hasattr(next_card, "cardsrs") and next_card.cardsrs else "",
+            "step": _step_from_interval(next_card.cardsrs.interval_days) if hasattr(next_card, "cardsrs") and next_card.cardsrs else 0,
+        }
+    else:
+        response["next_card"] = None
+
+    return JsonResponse(response)
+
+
+@login_required
+@require_POST
+def delete_flashcard(request, deck_id, card_id):
+    """Delete a flashcard from study mode and return the next due card."""
+
+    deck = get_object_or_404(Deck, id=deck_id, user=request.user, is_archived=False)
+    card = get_object_or_404(Card, id=card_id, deck=deck, deck__user=request.user)
+
+    card.delete()
+
+    now = timezone.localtime()
+    end_of_today = now.replace(hour=23, minute=59, second=59, microsecond=999999)
+    due_filter = Q(cardsrs__due_at__lte=end_of_today) | Q(cardsrs__isnull=True)
+
+    next_card = (
+        Card.objects.filter(deck_id=deck_id, status="active")
+        .filter(due_filter)
+        .select_related("cardsrs")
+        .order_by("created_at")
+        .first()
+    )
+
+    response = {"ok": True}
     if next_card is not None:
         response["next_card"] = {
             "id": next_card.id,
@@ -455,6 +519,7 @@ def organize_decks(request):
     source_id = payload.get("source_deck_id")
     target_id = payload.get("target_deck_id")
     target_folder_id = payload.get("target_folder_id")
+    target_root = bool(payload.get("target_root"))
 
     if not source_id:
         return JsonResponse(
@@ -468,9 +533,15 @@ def organize_decks(request):
             status=400,
         )
 
-    if not target_id and not target_folder_id:
+    if target_root and (target_id or target_folder_id):
         return JsonResponse(
-            {"ok": False, "error": "Target deck id or target folder id is required."},
+            {"ok": False, "error": "Root drop cannot include target deck or folder id."},
+            status=400,
+        )
+
+    if not target_id and not target_folder_id and not target_root:
+        return JsonResponse(
+            {"ok": False, "error": "Target deck id, target folder id, or target_root is required."},
             status=400,
         )
 
@@ -489,7 +560,24 @@ def organize_decks(request):
         return JsonResponse({"ok": False, "error": "Deck not found."}, status=404)
 
     with transaction.atomic():
-        if target_folder_id:
+        if target_root:
+            # Move deck out of any folder and make it the first ungrouped deck.
+            min_ungrouped_sort = (
+                Deck.objects.filter(
+                    user=request.user,
+                    is_archived=False,
+                    folder__isnull=True,
+                )
+                .exclude(id=source_deck.id)
+                .order_by("sort_order")
+                .values_list("sort_order", flat=True)
+                .first()
+            )
+            source_deck.folder = None
+            source_deck.sort_order = (min_ungrouped_sort - 1) if min_ungrouped_sort is not None else 0
+            source_deck.save(update_fields=["folder", "sort_order"])
+            destination_folder = None
+        elif target_folder_id:
             destination_folder = Folder.objects.filter(
                 id=target_folder_id,
                 user=request.user,
@@ -542,15 +630,16 @@ def organize_decks(request):
                 target_deck.folder = destination_folder
                 target_deck.save(update_fields=["folder"])
 
-    return JsonResponse(
-        {
-            "ok": True,
-            "folder": {
-                "id": destination_folder.id,
-                "name": destination_folder.name,
-            },
+    response_payload = {"ok": True}
+    if destination_folder is not None:
+        response_payload["folder"] = {
+            "id": destination_folder.id,
+            "name": destination_folder.name,
         }
-    )
+    else:
+        response_payload["folder"] = None
+
+    return JsonResponse(response_payload)
 
 
 @login_required
