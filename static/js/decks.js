@@ -339,6 +339,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const error = responsePayload.error || "Could not organize NerDecks.";
       throw new Error(error);
     }
+    return responsePayload;
   }
 
   async function mergeFolders(sourceFolderId, targetFolderId, name) {
@@ -414,6 +415,86 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       tbody.appendChild(row);
     }
+  }
+
+  function moveDeckToFolder(deckId, targetFolderId, targetFolderName) {
+    if (!targetFolderId) return;
+
+    const row = document.querySelector(`.deck-row[data-deck-id="${deckId}"]`);
+    if (!row) return;
+
+    row.dataset.folderId = String(targetFolderId);
+
+    const deckNameWrap = row.querySelector("td .d-flex");
+    if (deckNameWrap) {
+      deckNameWrap.classList.add("ps-4");
+    }
+
+    const folderCell = row.children[3];
+    if (folderCell) {
+      folderCell.classList.remove("text-muted");
+      folderCell.textContent = "";
+      const badge = document.createElement("span");
+      badge.className = "badge text-bg-light border deck-folder-badge";
+      badge.textContent = targetFolderName || "";
+      folderCell.appendChild(badge);
+    }
+
+    const tbody = row.closest("tbody");
+    if (!tbody) return;
+
+    const targetFolderDeckRows = Array.from(
+      tbody.querySelectorAll(`.deck-row[data-folder-id="${targetFolderId}"]`)
+    ).filter((deckRow) => deckRow !== row);
+    const targetFolderRow = tbody.querySelector(`.folder-row[data-folder-id="${targetFolderId}"]`);
+
+    if (targetFolderDeckRows.length) {
+      targetFolderDeckRows[targetFolderDeckRows.length - 1].insertAdjacentElement("afterend", row);
+    } else if (targetFolderRow) {
+      targetFolderRow.insertAdjacentElement("afterend", row);
+    }
+
+    const targetToggle = document.querySelector(`.folder-toggle[data-folder-id="${targetFolderId}"]`);
+    const isExpanded = targetToggle?.getAttribute("aria-expanded") === "true";
+    row.classList.toggle("d-none", !isExpanded);
+  }
+
+  function removeFolderGroup(folderId) {
+    if (!folderId) return;
+    const normalizedFolderId = String(folderId);
+
+    const folderRow = document.querySelector(`.folder-row[data-folder-id="${normalizedFolderId}"]`);
+    if (folderRow) {
+      folderRow.remove();
+    }
+
+    document
+      .querySelectorAll(`.deck-row[data-folder-id="${normalizedFolderId}"]`)
+      .forEach((deckRow) => deckRow.remove());
+  }
+
+  function removeFolderIfEmpty(folderId) {
+    if (!folderId) return;
+    const normalizedFolderId = String(folderId);
+    const remainingDeckRows = document.querySelectorAll(
+      `.deck-row[data-folder-id="${normalizedFolderId}"]`
+    );
+    if (!remainingDeckRows.length) {
+      removeFolderGroup(normalizedFolderId);
+    }
+  }
+
+  function cleanupSourceFolderAfterMove(sourceFolderId, deletedEmptyFolderId) {
+    if (!sourceFolderId) return;
+    const normalizedSourceFolderId = String(sourceFolderId);
+    if (
+      deletedEmptyFolderId &&
+      String(deletedEmptyFolderId) === normalizedSourceFolderId
+    ) {
+      removeFolderGroup(normalizedSourceFolderId);
+      return;
+    }
+    removeFolderIfEmpty(normalizedSourceFolderId);
   }
 
   function getDropSource(event) {
@@ -555,8 +636,24 @@ document.addEventListener("DOMContentLoaded", () => {
         // Deck dropped on folder row: move deck into this folder.
         if (source.type === "deck") {
           if (!source.id) return;
-          await organizeDecks(source.id, null, targetFolderId);
-          window.location.reload();
+          const sourceRow = document.querySelector(
+            `.deck-row[data-deck-id="${source.id}"]`
+          );
+          const sourceFolderId = sourceRow?.dataset.folderId || null;
+          if (sourceFolderId && String(sourceFolderId) === String(targetFolderId)) {
+            return;
+          }
+
+          const organizePayload = await organizeDecks(source.id, null, targetFolderId);
+          const targetFolderName =
+            organizePayload.folder?.name ||
+            row.querySelector(".folder-name-display")?.textContent?.trim() ||
+            "";
+          moveDeckToFolder(source.id, targetFolderId, targetFolderName);
+          cleanupSourceFolderAfterMove(
+            sourceFolderId,
+            organizePayload.deleted_empty_folder_id
+          );
           return;
         }
 
@@ -607,8 +704,14 @@ document.addEventListener("DOMContentLoaded", () => {
       if (source.type !== "deck" || !source.id) return;
 
       try {
-        await organizeDecks(source.id, null, null, true);
+        const sourceRow = document.querySelector(`.deck-row[data-deck-id="${source.id}"]`);
+        const sourceFolderId = sourceRow?.dataset.folderId || null;
+        const organizePayload = await organizeDecks(source.id, null, null, true);
         moveDeckToUngroupedTop(source.id);
+        cleanupSourceFolderAfterMove(
+          sourceFolderId,
+          organizePayload.deleted_empty_folder_id
+        );
       } catch (error) {
         window.alert(error.message);
       }

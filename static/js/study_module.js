@@ -16,6 +16,8 @@ const confirmDeleteButtonEl = document.getElementById("confirmDeleteButton");
 const rightButtonEl = document.getElementById("right-button");
 const wrongButtonEl = document.getElementById("wrong-button");
 const messageEl = document.getElementById("review-message");
+const REVIEW_MESSAGE_VISIBLE_MS = 1500;
+const RIGHT_FEEDBACK_DELAY_MS = REVIEW_MESSAGE_VISIBLE_MS;
 
 if (
   cardTextEl &&
@@ -28,6 +30,8 @@ if (
   wrongButtonEl
 ) {
   const deleteModal = window.bootstrap ? new window.bootstrap.Modal(deleteModalEl) : null;
+  let isAnswerInFlight = false;
+  let reviewMessageTimeoutId = null;
   const cardState = {
     id: Number(cardTextEl.dataset.cardId),
     step: Number(cardTextEl.dataset.step || "0"),
@@ -82,10 +86,6 @@ if (
       cardTextEl.dataset.step = String(cardState.step);
       cardTextEl.dataset.dueAt = cardState.dueAt || "";
 
-      if (messageEl) {
-        messageEl.textContent = "";
-      }
-
       showFront();
       return;
     }
@@ -101,21 +101,56 @@ if (
     }
   }
 
-  async function handleAnswer(isRight) {
-    const { card: updatedCard, message } = reviewCardTwoButtons(cardState, isRight);
+  function wait(ms) {
+    return new Promise((resolve) => {
+      window.setTimeout(resolve, ms);
+    });
+  }
 
-    cardState.step = updatedCard.step;
-    cardState.dueAt = updatedCard.dueAt;
-
-    if (messageEl && message) {
-      messageEl.textContent = message;
+  function showTransientMessage(text, durationMs = REVIEW_MESSAGE_VISIBLE_MS) {
+    if (!messageEl || !text) return;
+    if (reviewMessageTimeoutId) {
+      window.clearTimeout(reviewMessageTimeoutId);
+      reviewMessageTimeoutId = null;
     }
+    messageEl.textContent = text;
+    reviewMessageTimeoutId = window.setTimeout(() => {
+      messageEl.textContent = "";
+      reviewMessageTimeoutId = null;
+    }, durationMs);
+  }
+
+  function clearReviewMessage() {
+    if (!messageEl) return;
+    if (reviewMessageTimeoutId) {
+      window.clearTimeout(reviewMessageTimeoutId);
+      reviewMessageTimeoutId = null;
+    }
+    messageEl.textContent = "";
+  }
+
+  function setAnswerActionDisabled(disabled) {
+    rightButtonEl.disabled = disabled;
+    wrongButtonEl.disabled = disabled;
+    editButtonEl.disabled = disabled;
+    deleteButtonEl.disabled = disabled;
+  }
+
+  async function handleAnswer(isRight) {
+    if (isAnswerInFlight) return;
+    isAnswerInFlight = true;
+    setAnswerActionDisabled(true);
+
+    const { card: updatedCard, message } = reviewCardTwoButtons(cardState, isRight);
+    showTransientMessage(message);
 
     const deckId = Number(document.body.dataset.deckId);
     const csrftoken = getCookie("csrftoken");
+    const delayPromise = isRight ? wait(RIGHT_FEEDBACK_DELAY_MS) : Promise.resolve();
+    let resp = null;
 
     try {
-      const resp = await fetch(`/decks/${deckId}/review/answer/`, {
+      resp = await fetch(`/decks/${deckId}/review/answer/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -128,17 +163,33 @@ if (
           due_at: updatedCard.dueAt,
         }),
       });
+    } catch (e) {
+      console.error("Failed to save review result", e);
+      resp = null;
+    }
 
-      if (resp.ok && isRight) {
+    await delayPromise;
+
+    try {
+      if (!resp || !resp.ok) {
+        showFront();
+        return;
+      }
+
+      if (isRight) {
         const data = await resp.json();
+        clearReviewMessage();
         moveToNextCard(data.next_card);
         return;
       }
-    } catch (e) {
-      console.error("Failed to save review result", e);
+
+      cardState.step = updatedCard.step;
+      cardState.dueAt = updatedCard.dueAt;
+      showFront();
+    } finally {
+      setAnswerActionDisabled(false);
+      isAnswerInFlight = false;
     }
-    // On failure or for wrong answers, stay on the same card.
-    showFront();
   }
 
   showButtonEl.addEventListener("click", () => {
@@ -182,9 +233,8 @@ if (
       moveToNextCard(data.next_card);
     } catch (e) {
       console.error("Failed to delete flashcard", e);
-      if (messageEl) {
-        messageEl.textContent = "Could not delete this flashcard. Please try again.";
-      }
+      clearReviewMessage();
+      showTransientMessage("Could not delete this flashcard. Please try again.");
     } finally {
       confirmDeleteButtonEl.disabled = false;
     }

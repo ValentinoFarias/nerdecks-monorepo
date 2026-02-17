@@ -27,7 +27,7 @@
 		<link rel="shortcut icon" href="{% static 'images/favicons/favicon.ico' %}" type="image/x-icon">
 		<link rel="manifest" href="{% static 'images/favicons/site.webmanifest' %}">
 		<!-- CSS Style	-->
-		<link rel="stylesheet" href="{% static 'css/style.css' %}">
+		<link rel="stylesheet" href="{% static 'css/style.css' %}?v=20260217-1">
 	</head>
 	<body class="d-flex flex-column min-vh-100 bg-light">
 		<!-- Top navigation bar with logo, Home and Logout buttons -->
@@ -203,7 +203,7 @@
 													</form>
 												</div>
 											</td>
-											<td class="text-muted deck-count">{{ deck.today_cards|default:0 }}</td>
+											<td class="{% if deck.today_cards %}text-danger fw-semibold{% else %}text-muted{% endif %} deck-count">{{ deck.today_cards|default:0 }}</td>
 											<td class="text-muted deck-count">{{ deck.total_cards|default:0 }}</td>
 											<td class="text-muted">
 												<span class="badge text-bg-light border deck-folder-badge">{{ group.folder.name }}</span>
@@ -273,7 +273,7 @@
 												</form>
 											</div>
 										</td>
-										<td class="text-muted deck-count">{{ deck.today_cards|default:0 }}</td>
+										<td class="{% if deck.today_cards %}text-danger fw-semibold{% else %}text-muted{% endif %} deck-count">{{ deck.today_cards|default:0 }}</td>
 										<td class="text-muted deck-count">{{ deck.total_cards|default:0 }}</td>
 										<td class="text-muted">-</td>
 										<td>
@@ -377,6 +377,6 @@
 			crossorigin="anonymous"
 		></script>
 		<script src="{% static 'js/scramble_effect.js' %}"></script>
-		<script src="{% static 'js/decks.js' %}?v=20260217-2"></script>
+		<script src="{% static 'js/decks.js' %}?v=20260217-3"></script>
 	</body>
 </html>

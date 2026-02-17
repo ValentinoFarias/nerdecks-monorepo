@@ -559,6 +559,9 @@ def organize_decks(request):
     if not source_deck:
         return JsonResponse({"ok": False, "error": "Deck not found."}, status=404)
 
+    source_folder_id_before = source_deck.folder_id
+    deleted_empty_folder_id = None
+
     with transaction.atomic():
         if target_root:
             # Move deck out of any folder and make it the first ungrouped deck.
@@ -630,6 +633,18 @@ def organize_decks(request):
                 target_deck.folder = destination_folder
                 target_deck.save(update_fields=["folder"])
 
+        # If the source deck moved out of its original folder, delete that folder if now empty.
+        if source_folder_id_before and source_deck.folder_id != source_folder_id_before:
+            source_folder = Folder.objects.filter(id=source_folder_id_before, user=request.user).first()
+            folder_still_has_decks = Deck.objects.filter(
+                user=request.user,
+                is_archived=False,
+                folder_id=source_folder_id_before,
+            ).exists()
+            if source_folder and not folder_still_has_decks:
+                source_folder.delete()
+                deleted_empty_folder_id = source_folder_id_before
+
     response_payload = {"ok": True}
     if destination_folder is not None:
         response_payload["folder"] = {
@@ -638,6 +653,7 @@ def organize_decks(request):
         }
     else:
         response_payload["folder"] = None
+    response_payload["deleted_empty_folder_id"] = deleted_empty_folder_id
 
     return JsonResponse(response_payload)
 

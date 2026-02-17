@@ -596,7 +596,14 @@ body.run-reveal .transition-row .block {
 
 .deck-count {
   font-weight: 600;
-  color: #334155 !important;
+}
+
+.deck-count.text-muted {
+  color: var(--bs-secondary-color) !important;
+}
+
+.deck-count.text-danger {
+  color: var(--bs-danger) !important;
 }
 
 .deck-action-btn {
