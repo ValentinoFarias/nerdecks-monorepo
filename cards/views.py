@@ -19,10 +19,11 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from django.utils import timezone
+from django.db import transaction
 from django.db.models import Q, Count
 
 from .forms import EmailSignupForm, CardForm
-from .models import Deck, Card, ReviewSession, CardSRS
+from .models import Deck, Card, ReviewSession, CardSRS, Folder
 
 
 # Default review ladder in days used by the simple spaced‑repetition system.
@@ -88,6 +89,7 @@ class DecksView(TemplateView):
         decks = (
             Deck.objects
             .filter(user=self.request.user, is_archived=False)
+            .select_related("folder")
             .annotate(
                 # Total active cards per deck.
                 total_cards=Count(
@@ -109,7 +111,26 @@ class DecksView(TemplateView):
                 .count()
             )
 
+        folder_groups_map = {}
+        ungrouped_decks = []
+        for deck in decks:
+            if deck.folder_id:
+                group = folder_groups_map.setdefault(
+                    deck.folder_id,
+                    {"folder": deck.folder, "decks": []},
+                )
+                group["decks"].append(deck)
+            else:
+                ungrouped_decks.append(deck)
+
+        folder_groups = sorted(
+            folder_groups_map.values(),
+            key=lambda item: item["folder"].created_at,
+        )
+
         context["decks"] = decks
+        context["folder_groups"] = folder_groups
+        context["ungrouped_decks"] = ungrouped_decks
         return context
 
 
@@ -323,6 +344,272 @@ def delete_deck(request):
     deck.delete()
     messages.success(request, f"NerDeck '{title}' deleted.")
     return redirect("decks")
+
+
+@login_required
+@require_POST
+def rename_deck(request):
+    """Rename a deck from the decks list inline editor."""
+
+    deck_id = request.POST.get("deck_id")
+    new_title = request.POST.get("title", "").strip()
+
+    if not deck_id:
+        messages.error(request, "Could not determine which NerDeck to rename.")
+        return redirect("decks")
+
+    deck = Deck.objects.filter(
+        user=request.user,
+        id=deck_id,
+        is_archived=False,
+    ).first()
+    if not deck:
+        messages.error(request, "NerDeck not found.")
+        return redirect("decks")
+
+    if not new_title:
+        messages.error(request, "Please provide a valid NerDeck name.")
+        return redirect("decks")
+
+    if len(new_title) > 255:
+        messages.error(request, "NerDeck name is too long.")
+        return redirect("decks")
+
+    if new_title == deck.title:
+        return redirect("decks")
+
+    deck.title = new_title
+    deck.save(update_fields=["title"])
+    messages.success(request, f"NerDeck renamed to '{new_title}'.")
+    return redirect("decks")
+
+
+@login_required
+@require_POST
+def rename_folder(request):
+    """Rename a folder from the decks list inline editor."""
+
+    folder_id = request.POST.get("folder_id")
+    new_name = request.POST.get("name", "").strip()
+    is_ajax = request.headers.get("x-requested-with") == "XMLHttpRequest"
+
+    if not folder_id:
+        if is_ajax:
+            return JsonResponse(
+                {"ok": False, "error": "Could not determine which folder to rename."},
+                status=400,
+            )
+        messages.error(request, "Could not determine which folder to rename.")
+        return redirect("decks")
+
+    folder = Folder.objects.filter(
+        user=request.user,
+        id=folder_id,
+    ).first()
+    if not folder:
+        if is_ajax:
+            return JsonResponse({"ok": False, "error": "Folder not found."}, status=404)
+        messages.error(request, "Folder not found.")
+        return redirect("decks")
+
+    if not new_name:
+        if is_ajax:
+            return JsonResponse(
+                {"ok": False, "error": "Please provide a valid folder name."},
+                status=400,
+            )
+        messages.error(request, "Please provide a valid folder name.")
+        return redirect("decks")
+
+    if len(new_name) > 255:
+        if is_ajax:
+            return JsonResponse({"ok": False, "error": "Folder name is too long."}, status=400)
+        messages.error(request, "Folder name is too long.")
+        return redirect("decks")
+
+    if new_name == folder.name:
+        if is_ajax:
+            return JsonResponse(
+                {"ok": True, "folder": {"id": folder.id, "name": folder.name}}
+            )
+        return redirect("decks")
+
+    folder.name = new_name
+    folder.save(update_fields=["name"])
+    if is_ajax:
+        return JsonResponse({"ok": True, "folder": {"id": folder.id, "name": folder.name}})
+    messages.success(request, f"Folder renamed to '{new_name}'.")
+    return redirect("decks")
+
+
+def _build_folder_name(source_title: str, target_title: str) -> str:
+    """Build a compact default folder name from two deck titles."""
+
+    base = f"{target_title} + {source_title}"
+    if len(base) <= 255:
+        return base
+    return base[:255]
+
+
+@login_required
+@require_POST
+def organize_decks(request):
+    """Assign decks to a folder based on drag-and-drop from the decks table."""
+
+    try:
+        payload = json.loads(request.body.decode("utf-8"))
+    except json.JSONDecodeError:
+        return JsonResponse({"ok": False, "error": "Invalid JSON payload."}, status=400)
+
+    source_id = payload.get("source_deck_id")
+    target_id = payload.get("target_deck_id")
+    target_folder_id = payload.get("target_folder_id")
+
+    if not source_id:
+        return JsonResponse(
+            {"ok": False, "error": "Source deck id is required."},
+            status=400,
+        )
+
+    if target_id and target_folder_id:
+        return JsonResponse(
+            {"ok": False, "error": "Provide either target deck id or target folder id."},
+            status=400,
+        )
+
+    if not target_id and not target_folder_id:
+        return JsonResponse(
+            {"ok": False, "error": "Target deck id or target folder id is required."},
+            status=400,
+        )
+
+    if target_id and str(source_id) == str(target_id):
+        return JsonResponse(
+            {"ok": False, "error": "Source and target decks must be different."},
+            status=400,
+        )
+
+    source_deck = Deck.objects.filter(
+        id=source_id,
+        user=request.user,
+        is_archived=False,
+    ).select_related("folder").first()
+    if not source_deck:
+        return JsonResponse({"ok": False, "error": "Deck not found."}, status=404)
+
+    with transaction.atomic():
+        if target_folder_id:
+            destination_folder = Folder.objects.filter(
+                id=target_folder_id,
+                user=request.user,
+            ).first()
+            if not destination_folder:
+                return JsonResponse({"ok": False, "error": "Folder not found."}, status=404)
+
+            if source_deck.folder_id != destination_folder.id:
+                source_deck.folder = destination_folder
+                source_deck.save(update_fields=["folder"])
+        else:
+            target_deck = Deck.objects.filter(
+                id=target_id,
+                user=request.user,
+                is_archived=False,
+            ).select_related("folder").first()
+
+            if not target_deck:
+                return JsonResponse({"ok": False, "error": "Deck not found."}, status=404)
+
+            destination_folder = target_deck.folder or source_deck.folder
+
+            # No existing folder on either side: create one and move both decks in.
+            if destination_folder is None:
+                destination_folder = Folder.objects.create(
+                    user=request.user,
+                    name=_build_folder_name(source_deck.title, target_deck.title),
+                )
+
+            # If both decks belong to different folders, merge source folder into target folder.
+            source_folder = source_deck.folder
+            target_folder = target_deck.folder
+            if (
+                source_folder
+                and target_folder
+                and source_folder.id != target_folder.id
+            ):
+                Deck.objects.filter(folder=source_folder, user=request.user).update(
+                    folder=target_folder
+                )
+                destination_folder = target_folder
+                if not Deck.objects.filter(folder=source_folder).exists():
+                    source_folder.delete()
+
+            if source_deck.folder_id != destination_folder.id:
+                source_deck.folder = destination_folder
+                source_deck.save(update_fields=["folder"])
+
+            if target_deck.folder_id != destination_folder.id:
+                target_deck.folder = destination_folder
+                target_deck.save(update_fields=["folder"])
+
+    return JsonResponse(
+        {
+            "ok": True,
+            "folder": {
+                "id": destination_folder.id,
+                "name": destination_folder.name,
+            },
+        }
+    )
+
+
+@login_required
+@require_POST
+def merge_folders(request):
+    """Merge one folder into another and create a freshly named destination folder."""
+
+    try:
+        payload = json.loads(request.body.decode("utf-8"))
+    except json.JSONDecodeError:
+        return JsonResponse({"ok": False, "error": "Invalid JSON payload."}, status=400)
+
+    source_folder_id = payload.get("source_folder_id")
+    target_folder_id = payload.get("target_folder_id")
+    new_name = (payload.get("name") or "").strip()
+
+    if not source_folder_id or not target_folder_id:
+        return JsonResponse(
+            {"ok": False, "error": "Both source and target folder ids are required."},
+            status=400,
+        )
+
+    if str(source_folder_id) == str(target_folder_id):
+        return JsonResponse({"ok": False, "error": "Folders must be different."}, status=400)
+
+    if not new_name:
+        return JsonResponse({"ok": False, "error": "Folder name is required."}, status=400)
+
+    if len(new_name) > 255:
+        return JsonResponse({"ok": False, "error": "Folder name is too long."}, status=400)
+
+    source_folder = Folder.objects.filter(id=source_folder_id, user=request.user).first()
+    target_folder = Folder.objects.filter(id=target_folder_id, user=request.user).first()
+
+    if not source_folder or not target_folder:
+        return JsonResponse({"ok": False, "error": "Folder not found."}, status=404)
+
+    with transaction.atomic():
+        merged_folder = Folder.objects.create(user=request.user, name=new_name)
+        Deck.objects.filter(
+            user=request.user,
+            folder_id__in=[source_folder.id, target_folder.id],
+        ).update(folder=merged_folder)
+
+        source_folder.delete()
+        target_folder.delete()
+
+    return JsonResponse(
+        {"ok": True, "folder": {"id": merged_folder.id, "name": merged_folder.name}}
+    )
 
 
 # ---------------------------------------------------------------------------

@@ -268,4 +268,226 @@ body.run-reveal .transition-row .block {
   font-size: 3rem;
 }
 
+.deck-table-wrap {
+  background: #ffffff;
+  border: 1px solid #e6ebf2;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+}
 
+#createDeckModal .modal-content {
+  border-radius: 16px;
+  border: 1px solid #e6ebf2;
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.12);
+}
+
+#createDeckModal .modal-title {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+}
+
+#createDeckModal .form-label {
+  font-weight: 600;
+  color: #334155;
+}
+
+#newDeckNameInput {
+  border-radius: 10px;
+}
+
+.deck-table {
+  width: 100%;
+  table-layout: fixed;
+  margin-bottom: 0;
+}
+
+.deck-table thead th {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #334155;
+  background: linear-gradient(90deg, #f8fafc 0%, #eef2f7 100%);
+  border-bottom: 1px solid #dbe4ef;
+  padding: 0.95rem 1rem;
+}
+
+/* Keep column widths static when folder rows open/close. */
+.deck-table thead th:nth-child(1) { width: 40%; }
+.deck-table thead th:nth-child(2) { width: 10%; }
+.deck-table thead th:nth-child(3) { width: 10%; }
+.deck-table thead th:nth-child(4) { width: 14%; }
+.deck-table thead th:nth-child(5) { width: 13%; }
+.deck-table thead th:nth-child(6) { width: 13%; }
+
+.deck-table tbody td {
+  padding: 0.95rem 1rem;
+  border-color: #edf2f7;
+}
+
+.deck-table tbody tr:nth-child(odd) td {
+  background-color: #fcfdff;
+}
+
+.deck-table tbody tr:hover td {
+  background-color: #f3f9ff;
+}
+
+.folder-row td {
+  background-color: #f8fafc;
+  border-top: 1px solid #e7eef7;
+}
+
+.folder-row {
+  cursor: grab;
+}
+
+.folder-row.folder-row-dragging {
+  opacity: 0.6;
+}
+
+.folder-row.folder-row-drop-target td {
+  background-color: #e8f3ff !important;
+  outline: 2px dashed #0d6efd;
+  outline-offset: -2px;
+}
+
+.folder-toggle {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.folder-arrow {
+  display: inline-block;
+  width: 1.15rem;
+}
+
+.folder-rename-form {
+  margin: 0;
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.folder-name {
+  display: inline-block;
+  font-weight: 600;
+  color: #0f172a;
+  cursor: text;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.folder-name-input {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 175px;
+  max-width: min(240px, calc(100vw - 4rem));
+  transform: translateY(-50%);
+  min-width: 175px;
+  z-index: 2;
+}
+
+.folder-name-display.folder-name-editing {
+  visibility: hidden;
+}
+
+.deck-row {
+  cursor: grab;
+}
+
+.deck-row.deck-row-dragging {
+  opacity: 0.5;
+}
+
+.deck-row.deck-row-drop-target td {
+  background-color: #e8f3ff !important;
+  outline: 2px dashed #0d6efd;
+  outline-offset: -2px;
+}
+
+.deck-name {
+  font-weight: 600;
+  color: #0f172a;
+  cursor: text;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.deck-rename-form {
+  margin: 0;
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.deck-name-input {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 175px;
+  max-width: min(240px, calc(100vw - 4rem));
+  transform: translateY(-50%);
+  min-width: 175px;
+  z-index: 2;
+}
+
+.deck-name-display {
+  display: inline-block;
+}
+
+.deck-name-display.deck-name-editing {
+  visibility: hidden;
+}
+
+.deck-count {
+  font-weight: 600;
+  color: #334155 !important;
+}
+
+.deck-action-btn {
+  /* Gives both action buttons a consistent pill shape and baseline width. */
+  font-weight: 600;
+  border-radius: 999px;
+  min-width: 82px;
+}
+
+/*
+ * Bootstrap's d-none removes elements from layout (display: none), which caused
+ * the table to resize when a row was selected. For deck action buttons inside
+ * this table, we keep them in flow but invisible so column widths stay fixed.
+ */
+.deck-table .deck-action-btn.d-none {
+  display: inline-block !important;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.deck-radio {
+  cursor: pointer;
+  border: 2px solid #64748b;
+}
+
+.deck-radio:checked {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+@media (max-width: 768px) {
+  .your-decks {
+    font-size: 2.1rem;
+  }
+
+  .deck-table thead th,
+  .deck-table tbody td {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+}
