@@ -268,18 +268,88 @@ body.run-reveal .transition-row .block {
   font-size: 3rem;
 }
 
-.deck-table-wrap {
-  background: #ffffff;
-  border: 1px solid #e6ebf2;
-  border-radius: 18px;
-  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
-  overflow: hidden;
+.new-flashcard-main {
+  background:
+    radial-gradient(circle at 15% 20%, rgba(13, 110, 253, 0.1), transparent 40%),
+    radial-gradient(circle at 85% 80%, rgba(25, 135, 84, 0.08), transparent 42%);
 }
 
+.new-flashcard-shell {
+  background: #ffffff;
+  border: 1px solid #e6ebf2;
+  border-radius: 22px;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.12);
+  padding: 2rem;
+}
+
+.new-flashcard-kicker {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.new-flashcard-title {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.1;
+}
+
+.new-flashcard-deck {
+  color: #475569;
+  font-weight: 500;
+}
+
+.new-flashcard-deck-name {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #1e3a8a;
+  font-weight: 700;
+}
+
+.new-flashcard-form p {
+  margin-bottom: 1rem;
+}
+
+.new-flashcard-form label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.new-flashcard-form input,
+.new-flashcard-form textarea,
+.new-flashcard-form select {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 0.62rem 0.78rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.new-flashcard-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.new-flashcard-form input:focus,
+.new-flashcard-form textarea:focus,
+.new-flashcard-form select:focus {
+  outline: none;
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+/* New deck button */
 #createDeckModal .modal-content {
   border-radius: 16px;
   border: 1px solid #e6ebf2;
-  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.12);
 }
 
 #createDeckModal .modal-title {
@@ -287,13 +357,13 @@ body.run-reveal .transition-row .block {
   font-weight: 700;
 }
 
-#createDeckModal .form-label {
-  font-weight: 600;
-  color: #334155;
-}
 
-#newDeckNameInput {
-  border-radius: 10px;
+.deck-table-wrap {
+  background: #ffffff;
+  border: 1px solid #e6ebf2;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
 }
 
 .deck-table {

@@ -135,15 +135,6 @@ class DecksView(TemplateView):
 
 
 @login_required
-def deck_flashcards(request, deck_id):
-    """Show all active flashcards in a single deck."""
-
-    deck = get_object_or_404(Deck, id=deck_id, user=request.user, is_archived=False)
-    cards = Card.objects.filter(deck=deck, status="active").order_by("created_at")
-    return render(request, "flashcards.html", {"deck": deck, "cards": cards})
-
-
-@login_required
 def new_flashcard(request, deck_id):
     """Create a new flashcard inside the given deck."""
 
@@ -156,7 +147,7 @@ def new_flashcard(request, deck_id):
             card.deck = deck
             card.save()
             messages.success(request, "Flashcard created.")
-            return redirect("deck_flashcards", deck_id=deck.id)
+            return redirect("decks")
     else:
         form = CardForm()
 

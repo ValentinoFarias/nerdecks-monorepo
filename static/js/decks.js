@@ -1,15 +1,36 @@
+// Modal for New Deck and New Folder forms
+
+document.addEventListener("DOMContentLoaded", () => {
+  const input = document.getElementById("newDeckNameInput");
+  const confirmBtn = document.getElementById("confirmCreateDeckBtn");
+  const hiddenTitle = document.getElementById("deck-title-input");
+  const form = document.getElementById("create-deck-form");
+  const modalEl = document.getElementById("createDeckModal");
+
+  if (confirmBtn && input && hiddenTitle && form && modalEl) {
+    confirmBtn.addEventListener("click", () => {
+      const name = input.value.trim();
+      if (!name) return;
+      hiddenTitle.value = name;
+      form.submit();
+    });
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        confirmBtn.click();
+      }
+    });
+  }
+});
+
+
 // Page behavior for:
 // - deck row actions (study/add buttons)
 // - inline deck renaming
 // - folder expand/collapse
 // - drag/drop deck and folder organization
 document.addEventListener("DOMContentLoaded", () => {
-  const createDeckModal = document.getElementById("createDeckModal");
-  const newDeckNameInput = document.getElementById("newDeckNameInput");
-  const confirmCreateDeckBtn = document.getElementById("confirmCreateDeckBtn");
-  const deckTitleInput = document.getElementById("deck-title-input");
-  const createDeckForm = document.getElementById("create-deck-form");
-
   const radios = document.querySelectorAll(".deck-radio");
   const studyButtons = document.querySelectorAll(".study-button");
   const addButtons = document.querySelectorAll(".add-flashcard-button");
@@ -19,39 +40,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const folderRows = document.querySelectorAll(".folder-row");
   const folderToggles = document.querySelectorAll(".folder-toggle");
   const dragState = { type: null, deckId: null, folderId: null };
-
-  function submitCreateDeck() {
-    if (!newDeckNameInput || !deckTitleInput || !createDeckForm) return;
-
-    const name = newDeckNameInput.value.trim();
-    if (!name) {
-      newDeckNameInput.focus();
-      return;
-    }
-
-    deckTitleInput.value = name;
-    createDeckForm.submit();
-  }
-
-  if (createDeckModal && newDeckNameInput && confirmCreateDeckBtn) {
-    confirmCreateDeckBtn.addEventListener("click", submitCreateDeck);
-
-    newDeckNameInput.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        submitCreateDeck();
-      }
-    });
-
-    createDeckModal.addEventListener("shown.bs.modal", () => {
-      newDeckNameInput.focus();
-      newDeckNameInput.select();
-    });
-
-    createDeckModal.addEventListener("hidden.bs.modal", () => {
-      newDeckNameInput.value = "";
-    });
-  }
 
   function clearButtons() {
     // Hide all action buttons, then selectively show only for the selected deck.
