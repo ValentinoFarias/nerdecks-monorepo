@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const folderToggles = document.querySelectorAll(".folder-toggle");
   const rootDropZone = document.querySelector(".root-drop-zone");
   const dragState = { type: null, deckId: null, folderId: null };
+  const isSmallViewport = window.matchMedia("(max-width: 767.98px)").matches;
 
   function clearButtons() {
     // Hide all action buttons, then selectively show only for the selected deck.
@@ -313,6 +314,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!cookie) return "";
     return decodeURIComponent(cookie.split("=")[1]);
+  }
+
+  if (isSmallViewport) {
+    return;
   }
 
   async function organizeDecks(sourceDeckId, targetDeckId, targetFolderId, targetRoot = false) {

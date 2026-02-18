@@ -667,6 +667,75 @@ body.run-reveal .transition-row .block {
   border-color: #0d6efd;
 }
 
+.decks-mobile-folder {
+  background: #ffffff;
+  border: 1px solid #e6ebf2;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.decks-mobile-folder-summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 0.8rem 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  background: linear-gradient(90deg, #f8fafc 0%, #eef2f7 100%);
+}
+
+.decks-mobile-folder-summary::-webkit-details-marker {
+  display: none;
+}
+
+.decks-mobile-folder-summary::after {
+  content: "▾";
+  color: #475569;
+  font-size: 0.9rem;
+  flex: 0 0 auto;
+  transition: transform 0.2s ease;
+}
+
+.decks-mobile-folder:not([open]) .decks-mobile-folder-summary::after {
+  transform: rotate(-90deg);
+}
+
+.decks-mobile-folder-name {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  color: #0f172a;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.decks-mobile-folder-content {
+  padding: 0.75rem;
+}
+
+.decks-mobile-card {
+  background: #ffffff;
+  border: 1px solid #e6ebf2;
+  border-radius: 12px;
+  padding: 0.8rem;
+}
+
+.decks-mobile-card + .decks-mobile-card {
+  margin-top: 0.65rem;
+}
+
+.decks-mobile-section-title {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #475569;
+  margin-bottom: 0;
+}
+
 @media (max-width: 768px) {
   .your-decks {
     font-size: 2.1rem;

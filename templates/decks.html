@@ -91,236 +91,294 @@
   </div>
 </div>
 				</div>
-				<!-- Table listing all decks with counts for due and total cards -->
-				<div class="row justify-content-center">
-					<div class="col-lg-10">
-						<div class="table-responsive deck-table-wrap">
-							<table class="table table-hover align-middle deck-table">
-						<thead>
-							<tr>
-								<th scope="col">NerDecks</th>
-								<th scope="col">Due today</th>
-								<th scope="col">Total</th>
-								<th scope="col">Folder</th>
-								<th scope="col">Status</th>
-								<th scope="col">Flashcards</th>
-							</tr>
-						</thead>
-						<tbody>
-							{% if decks %}
-								{% for group in folder_groups %}
-									<tr
-										class="folder-row"
-										draggable="true"
-										data-drag-type="folder"
-										data-folder-id="{{ group.folder.id }}"
-									>
-										<td>
-											<div class="d-flex align-items-center gap-2">
-												<button
-													type="button"
-													class="folder-toggle btn btn-sm btn-link text-decoration-none p-0"
-													data-folder-id="{{ group.folder.id }}"
-													aria-expanded="false"
-													aria-label="Toggle folder decks"
-												>
-													<span class="folder-arrow">▶</span>
-												</button>
-												<form
-													method="post"
-													action="{% url 'rename_folder' %}"
-													class="folder-rename-form mb-0"
-												>
-													{% csrf_token %}
-													<input type="hidden" name="folder_id" value="{{ group.folder.id }}">
-													<span
-														class="folder-name folder-name-display"
-														role="button"
-														tabindex="0"
-														title="Click to rename folder"
-													>
-														{{ group.folder.name }}
-													</span>
-													<input
-														type="text"
-														name="name"
-														class="form-control form-control-sm folder-name-input d-none"
-														value="{{ group.folder.name }}"
-														maxlength="255"
-														aria-label="Rename folder"
-													>
-												</form>
-											</div>
-										</td>
-										<td class="text-muted">-</td>
-										<td class="text-muted">-</td>
-										<td class="text-muted">Folder</td>
-										<td class="text-muted">-</td>
-										<td class="text-muted">-</td>
+					<!-- Table listing all decks with counts for due and total cards -->
+					<div class="row justify-content-center">
+						<div class="col-lg-10">
+							<div class="d-none d-md-block">
+								<div class="table-responsive deck-table-wrap">
+									<table class="table table-hover align-middle deck-table">
+								<thead>
+									<tr>
+										<th scope="col">NerDecks</th>
+										<th scope="col">Due today</th>
+										<th scope="col">Total</th>
+										<th scope="col">Folder</th>
+										<th scope="col">Status</th>
+										<th scope="col">Flashcards</th>
 									</tr>
-									{% for deck in group.decks %}
-										<tr
-											class="deck-row d-none"
-											draggable="true"
-											data-drag-type="deck"
-											data-deck-id="{{ deck.id }}"
-											data-folder-id="{{ group.folder.id }}"
-										>
-											<td>
-												<div class="d-flex align-items-center gap-2 ps-4">
-													<div class="form-check mb-0">
-														<input
-															class="form-check-input deck-radio"
-															type="radio"
-															name="selected_deck"
-															id="deck-{{ deck.id }}"
-															value="{{ deck.id }}"
+								</thead>
+								<tbody>
+									{% if decks %}
+										{% for group in folder_groups %}
+											<tr
+												class="folder-row"
+												draggable="true"
+												data-drag-type="folder"
+												data-folder-id="{{ group.folder.id }}"
+											>
+												<td>
+													<div class="d-flex align-items-center gap-2">
+														<button
+															type="button"
+															class="folder-toggle btn btn-sm btn-link text-decoration-none p-0"
+															data-folder-id="{{ group.folder.id }}"
+															aria-expanded="false"
+															aria-label="Toggle folder decks"
 														>
+															<span class="folder-arrow">▶</span>
+														</button>
+														<form
+															method="post"
+															action="{% url 'rename_folder' %}"
+															class="folder-rename-form mb-0"
+														>
+															{% csrf_token %}
+															<input type="hidden" name="folder_id" value="{{ group.folder.id }}">
+															<span
+																class="folder-name folder-name-display"
+																role="button"
+																tabindex="0"
+																title="Click to rename folder"
+															>
+																{{ group.folder.name }}
+															</span>
+															<input
+																type="text"
+																name="name"
+																class="form-control form-control-sm folder-name-input d-none"
+																value="{{ group.folder.name }}"
+																maxlength="255"
+																aria-label="Rename folder"
+															>
+														</form>
 													</div>
-													<form
-														method="post"
-														action="{% url 'rename_deck' %}"
-														class="deck-rename-form mb-0"
+												</td>
+												<td class="text-muted">-</td>
+												<td class="text-muted">-</td>
+												<td class="text-muted">Folder</td>
+												<td class="text-muted">-</td>
+												<td class="text-muted">-</td>
+											</tr>
+											{% for deck in group.decks %}
+												<tr
+													class="deck-row d-none"
+													draggable="true"
+													data-drag-type="deck"
+													data-deck-id="{{ deck.id }}"
+													data-folder-id="{{ group.folder.id }}"
+												>
+													<td>
+														<div class="d-flex align-items-center gap-2 ps-4">
+															<div class="form-check mb-0">
+																<input
+																	class="form-check-input deck-radio"
+																	type="radio"
+																	name="selected_deck"
+																	id="deck-{{ deck.id }}"
+																	value="{{ deck.id }}"
+																>
+															</div>
+															<form
+																method="post"
+																action="{% url 'rename_deck' %}"
+																class="deck-rename-form mb-0"
+															>
+																{% csrf_token %}
+																<input type="hidden" name="deck_id" value="{{ deck.id }}">
+																<span
+																	class="deck-name deck-name-display"
+																	role="button"
+																	tabindex="0"
+																	title="Click to rename"
+																>
+																	{{ deck.title }}
+																</span>
+																<input
+																	type="text"
+																	name="title"
+																	class="form-control form-control-sm deck-name-input d-none"
+																	value="{{ deck.title }}"
+																	maxlength="255"
+																	aria-label="Rename NerDeck"
+																>
+															</form>
+														</div>
+													</td>
+													<td class="{% if deck.today_cards %}text-danger fw-semibold{% else %}text-muted{% endif %} deck-count">{{ deck.today_cards|default:0 }}</td>
+													<td class="text-muted deck-count">{{ deck.total_cards|default:0 }}</td>
+													<td class="text-muted">
+														<span class="badge text-bg-light border deck-folder-badge">{{ group.folder.name }}</span>
+													</td>
+													<td>
+														<a
+															href="{% url 'study' deck.id %}"
+															class="btn btn-sm btn-success study-button deck-action-btn d-none"
+															data-deck-id="{{ deck.id }}"
+														>
+															Study
+														</a>
+													</td>
+													<td>
+														<a
+															href="{% url 'new_flashcard' deck.id %}"
+															class="btn btn-sm btn-warning add-flashcard-button deck-action-btn d-none"
+															data-deck-id="{{ deck.id }}"
+														>
+															Add
+														</a>
+													</td>
+												</tr>
+											{% endfor %}
+										{% endfor %}
+										{% for deck in ungrouped_decks %}
+											<tr
+												class="deck-row"
+												draggable="true"
+												data-drag-type="deck"
+												data-deck-id="{{ deck.id }}"
+											>
+												<td>
+													<div class="d-flex align-items-center gap-2">
+														<div class="form-check mb-0">
+															<input
+																class="form-check-input deck-radio"
+																type="radio"
+																name="selected_deck"
+																id="deck-{{ deck.id }}"
+																value="{{ deck.id }}"
+															>
+														</div>
+														<form
+															method="post"
+															action="{% url 'rename_deck' %}"
+															class="deck-rename-form mb-0"
+														>
+															{% csrf_token %}
+															<input type="hidden" name="deck_id" value="{{ deck.id }}">
+															<span
+																class="deck-name deck-name-display"
+																role="button"
+																tabindex="0"
+																title="Click to rename"
+															>
+																{{ deck.title }}
+															</span>
+															<input
+																type="text"
+																name="title"
+																class="form-control form-control-sm deck-name-input d-none"
+																value="{{ deck.title }}"
+																maxlength="255"
+																aria-label="Rename NerDeck"
+															>
+														</form>
+													</div>
+												</td>
+												<td class="{% if deck.today_cards %}text-danger fw-semibold{% else %}text-muted{% endif %} deck-count">{{ deck.today_cards|default:0 }}</td>
+												<td class="text-muted deck-count">{{ deck.total_cards|default:0 }}</td>
+												<td class="text-muted">-</td>
+												<td>
+													<a
+														href="{% url 'study' deck.id %}"
+														class="btn btn-sm btn-success study-button deck-action-btn d-none"
+														data-deck-id="{{ deck.id }}"
 													>
-														{% csrf_token %}
-														<input type="hidden" name="deck_id" value="{{ deck.id }}">
-														<span
-															class="deck-name deck-name-display"
-															role="button"
-															tabindex="0"
-															title="Click to rename"
-														>
-															{{ deck.title }}
-														</span>
-														<input
-															type="text"
-															name="title"
-															class="form-control form-control-sm deck-name-input d-none"
-															value="{{ deck.title }}"
-															maxlength="255"
-															aria-label="Rename NerDeck"
-														>
-													</form>
-												</div>
-											</td>
-											<td class="{% if deck.today_cards %}text-danger fw-semibold{% else %}text-muted{% endif %} deck-count">{{ deck.today_cards|default:0 }}</td>
-											<td class="text-muted deck-count">{{ deck.total_cards|default:0 }}</td>
-											<td class="text-muted">
-												<span class="badge text-bg-light border deck-folder-badge">{{ group.folder.name }}</span>
-											</td>
-											<td>
-												<a
-													href="{% url 'study' deck.id %}"
-													class="btn btn-sm btn-success study-button deck-action-btn d-none"
-													data-deck-id="{{ deck.id }}"
-												>
-													Study
-												</a>
-											</td>
-											<td>
-												<a
-													href="{% url 'new_flashcard' deck.id %}"
-													class="btn btn-sm btn-warning add-flashcard-button deck-action-btn d-none"
-													data-deck-id="{{ deck.id }}"
-												>
-													Add
-												</a>
-											</td>
+														Study
+													</a>
+												</td>
+												<td>
+													<a
+														href="{% url 'new_flashcard' deck.id %}"
+														class="btn btn-sm btn-warning add-flashcard-button deck-action-btn d-none"
+														data-deck-id="{{ deck.id }}"
+													>
+														Add
+													</a>
+												</td>
+											</tr>
+										{% endfor %}
+									{% else %}
+										<tr>
+											<td class="text-muted">No decks yet</td>
+											<td class="text-muted">0</td>
+											<td class="text-muted">0</td>
+											<td class="text-muted">-</td>
+											<td class="text-muted">-</td>
+											<td class="text-muted">-</td>
 										</tr>
-									{% endfor %}
-								{% endfor %}
-								{% for deck in ungrouped_decks %}
-									<tr
-										class="deck-row"
-										draggable="true"
-										data-drag-type="deck"
-										data-deck-id="{{ deck.id }}"
-									>
-										<td>
-											<div class="d-flex align-items-center gap-2">
-												<div class="form-check mb-0">
-													<input
-														class="form-check-input deck-radio"
-														type="radio"
-														name="selected_deck"
-														id="deck-{{ deck.id }}"
-														value="{{ deck.id }}"
-													>
-												</div>
-												<form
-													method="post"
-													action="{% url 'rename_deck' %}"
-													class="deck-rename-form mb-0"
-												>
-													{% csrf_token %}
-													<input type="hidden" name="deck_id" value="{{ deck.id }}">
-													<span
-														class="deck-name deck-name-display"
-														role="button"
-														tabindex="0"
-														title="Click to rename"
-													>
-														{{ deck.title }}
-													</span>
-													<input
-														type="text"
-														name="title"
-														class="form-control form-control-sm deck-name-input d-none"
-														value="{{ deck.title }}"
-														maxlength="255"
-														aria-label="Rename NerDeck"
-													>
-												</form>
-											</div>
-										</td>
-										<td class="{% if deck.today_cards %}text-danger fw-semibold{% else %}text-muted{% endif %} deck-count">{{ deck.today_cards|default:0 }}</td>
-										<td class="text-muted deck-count">{{ deck.total_cards|default:0 }}</td>
-										<td class="text-muted">-</td>
-										<td>
-											<a
-												href="{% url 'study' deck.id %}"
-												class="btn btn-sm btn-success study-button deck-action-btn d-none"
-												data-deck-id="{{ deck.id }}"
-											>
-												Study
-											</a>
-										</td>
-										<td>
-											<a
-												href="{% url 'new_flashcard' deck.id %}"
-												class="btn btn-sm btn-warning add-flashcard-button deck-action-btn d-none"
-												data-deck-id="{{ deck.id }}"
-											>
-												Add
-											</a>
+									{% endif %}
+									<tr class="root-drop-zone" data-drop-root="true">
+										<td colspan="6" class="text-muted">
+											Drop here to ungroup this NerDeck
 										</td>
 									</tr>
-								{% endfor %}
-							{% else %}
-								<tr>
-									<td class="text-muted">No decks yet</td>
-									<td class="text-muted">0</td>
-									<td class="text-muted">0</td>
-									<td class="text-muted">-</td>
-									<td class="text-muted">-</td>
-									<td class="text-muted">-</td>
-								</tr>
-							{% endif %}
-							<tr class="root-drop-zone" data-drop-root="true">
-								<td colspan="6" class="text-muted">
-									Drop here to ungroup this NerDeck
-								</td>
-							</tr>
-							</tbody>
-								</table>
-							</div>
-							<div class="d-flex justify-content-end mt-3">
-								<div class="deck-postit-note">
-									<p class="mb-0">Drag and Drop two NerDecks to create a folder!</p>
+									</tbody>
+										</table>
+									</div>
+									<div class="d-flex justify-content-end mt-3">
+										<div class="deck-postit-note">
+											<p class="mb-0">Drag and Drop two NerDecks to create a folder!</p>
+										</div>
+									</div>
+								</div>
+
+								<div class="d-md-none decks-mobile-wrap">
+									{% if decks %}
+										{% for group in folder_groups %}
+											<details class="decks-mobile-folder mb-3">
+												<summary class="decks-mobile-folder-summary">
+													<span class="decks-mobile-folder-name">{{ group.folder.name }}</span>
+													<span class="badge text-bg-light border">{{ group.decks|length }} NerDeck{{ group.decks|length|pluralize }}</span>
+												</summary>
+												<div class="decks-mobile-folder-content mt-2">
+													{% for deck in group.decks %}
+														<article class="decks-mobile-card">
+															<h2 class="h6 mb-2">{{ deck.title }}</h2>
+															<div class="d-flex flex-wrap gap-2 mb-3">
+																<span class="badge rounded-pill text-bg-light border">Due {{ deck.today_cards|default:0 }}</span>
+																<span class="badge rounded-pill text-bg-light border">Total {{ deck.total_cards|default:0 }}</span>
+															</div>
+															<div class="d-grid gap-2">
+																<a href="{% url 'study' deck.id %}" class="btn btn-success btn-sm">Study</a>
+																<a href="{% url 'new_flashcard' deck.id %}" class="btn btn-warning btn-sm">Add flashcard</a>
+															</div>
+														</article>
+													{% endfor %}
+												</div>
+											</details>
+										{% endfor %}
+
+										{% if ungrouped_decks %}
+											<section class="decks-mobile-ungrouped mb-3">
+												<h2 class="decks-mobile-section-title">Ungrouped</h2>
+												<div class="decks-mobile-folder-content mt-2">
+													{% for deck in ungrouped_decks %}
+														<article class="decks-mobile-card">
+															<h2 class="h6 mb-2">{{ deck.title }}</h2>
+															<div class="d-flex flex-wrap gap-2 mb-3">
+																<span class="badge rounded-pill text-bg-light border">Due {{ deck.today_cards|default:0 }}</span>
+																<span class="badge rounded-pill text-bg-light border">Total {{ deck.total_cards|default:0 }}</span>
+															</div>
+															<div class="d-grid gap-2">
+																<a href="{% url 'study' deck.id %}" class="btn btn-success btn-sm">Study</a>
+																<a href="{% url 'new_flashcard' deck.id %}" class="btn btn-warning btn-sm">Add flashcard</a>
+															</div>
+														</article>
+													{% endfor %}
+												</div>
+											</section>
+										{% endif %}
+									{% else %}
+										<div class="alert alert-light border text-center text-muted mb-0" role="status">
+											No decks yet
+										</div>
+									{% endif %}
+									<p class="text-center text-muted small mt-3 mb-0">
+										Drag and drop organization is available on tablet and desktop.
+									</p>
 								</div>
 							</div>
 						</div>
-					</div>
 				<!-- Button opens modal to delete an existing deck -->
 				<div class="text-center mt-3">
 					<button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteDeckModal">
