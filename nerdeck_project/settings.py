@@ -103,3 +103,8 @@ LOGOUT_REDIRECT_URL = "/home/"
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+X_FRAME_OPTIONS = "SAMEORIGIN"   # permite iframes SOLO desde tu mismo dominio
+# o para pruebas (menos seguro):
+X_FRAME_OPTIONS = "ALLOWALL"
