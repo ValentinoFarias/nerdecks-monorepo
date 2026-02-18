@@ -396,7 +396,19 @@ def delete_deck(request):
         return redirect("decks")
 
     title = deck.title
+    folder_id = deck.folder_id
     deck.delete()
+
+    if folder_id:
+        folder = Folder.objects.filter(id=folder_id, user=request.user).first()
+        folder_still_has_decks = Deck.objects.filter(
+            user=request.user,
+            is_archived=False,
+            folder_id=folder_id,
+        ).exists()
+        if folder and not folder_still_has_decks:
+            folder.delete()
+
     messages.success(request, f"NerDeck '{title}' deleted.")
     return redirect("decks")
 
