@@ -214,7 +214,6 @@ Cards are filtered by logged-in user.
 Tested on:
 - Chrome
 - Safari
-- Edge
 - Firefox
 
 ---
