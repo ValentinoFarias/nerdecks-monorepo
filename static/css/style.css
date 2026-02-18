@@ -678,3 +678,86 @@ body.run-reveal .transition-row .block {
     font-size: 0.9rem;
   }
 }
+
+/* Home page responsive adjustments (mobile/tablet only). */
+@media (max-width: 991.98px) {
+  .home-page .home-nav-actions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .home-page .hero-title {
+    font-size: clamp(3.6rem, 11vw, 6rem);
+  }
+
+  .home-page .hero-title .glitch-btn {
+    padding: 0 12px;
+  }
+
+  .home-page .home-hero .card-body {
+    padding: 2.5rem 1.5rem;
+  }
+
+  .home-page .home-how-title {
+    font-size: clamp(2.6rem, 8vw, 4.5rem);
+  }
+}
+
+@media (max-width: 767.98px) {
+  .home-page header .container {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .home-page .home-nav-actions {
+    width: 100%;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .home-page .home-nav-actions .btn {
+    flex: 1 1 auto;
+    min-width: 140px;
+  }
+
+  .home-page .hero-ratio {
+    --bs-aspect-ratio: 100%;
+  }
+
+  .home-page .hero-title {
+    font-size: clamp(2.2rem, 12vw, 3.6rem);
+    line-height: 1.05;
+  }
+
+  .home-page .hero-title .glitch-btn {
+    padding: 0 8px;
+  }
+
+  .home-page .home-how-title {
+    font-size: clamp(2rem, 11vw, 3rem);
+    line-height: 1.1;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .home-page .hero-ratio {
+    --bs-aspect-ratio: 115%;
+  }
+
+  .home-page .home-hero .card-body {
+    padding: 1.75rem 0.8rem;
+  }
+
+  .home-page #main-home-content section.py-5 {
+    padding-top: 2.5rem !important;
+    padding-bottom: 2.5rem !important;
+  }
+
+  .home-page .home-nav-actions .btn {
+    min-width: 0;
+  }
+
+  .home-page .scramble-text {
+    font-size: 16px;
+  }
+}
