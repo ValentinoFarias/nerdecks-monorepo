@@ -681,11 +681,6 @@ body.run-reveal .transition-row .block {
 
 /* Home page responsive adjustments (mobile/tablet only). */
 @media (max-width: 991.98px) {
-  .home-page .home-nav-actions {
-    flex-wrap: wrap;
-    justify-content: flex-end;
-  }
-
   .home-page .hero-title {
     font-size: clamp(3.6rem, 11vw, 6rem);
   }
@@ -704,18 +699,30 @@ body.run-reveal .transition-row .block {
 }
 
 @media (max-width: 767.98px) {
-  .home-page header .container {
+  header.border-bottom > .container.d-flex.align-items-center.justify-content-between {
     flex-wrap: wrap;
+    justify-content: center !important;
     gap: 0.75rem;
   }
 
-  .home-page .home-nav-actions {
+  header.border-bottom > .container.d-flex.align-items-center.justify-content-between > a.d-flex.align-items-center.text-decoration-none {
     width: 100%;
     justify-content: center;
-    gap: 0.5rem;
   }
 
-  .home-page .home-nav-actions .btn {
+  header.border-bottom > .container.d-flex.align-items-center.justify-content-between > a.d-flex.align-items-center.text-decoration-none img {
+    display: block;
+    margin: 0 auto;
+  }
+
+  header.border-bottom > .container.d-flex.align-items-center.justify-content-between > div.d-flex {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem !important;
+  }
+
+  header.border-bottom > .container.d-flex.align-items-center.justify-content-between > div.d-flex .btn {
     flex: 1 1 auto;
     min-width: 140px;
   }
@@ -753,11 +760,11 @@ body.run-reveal .transition-row .block {
     padding-bottom: 2.5rem !important;
   }
 
-  .home-page .home-nav-actions .btn {
+  header.border-bottom > .container.d-flex.align-items-center.justify-content-between > div.d-flex .btn {
     min-width: 0;
   }
 
-  .home-page .scramble-text {
+  header.border-bottom .scramble-text {
     font-size: 16px;
   }
 }
