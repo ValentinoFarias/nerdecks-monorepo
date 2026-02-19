@@ -116,23 +116,25 @@ Main Models & Relationships
 
 The application is built around a structured learning hierarchy with clear separation between content and learning logic.
 
-Main models:
-	•	Folder
-	•	Deck
-	•	Card
-	•	CardSRS
-	•	ReviewSession
-	•	(User – Django built-in model)
+### Main models
 
-⸻
+- Folder
+- Deck
+- Card
+- CardSRS
+- ReviewSession
+- User (Django built-in model)
 
-Relationships
-	•	One User → Many Folders
-	•	One User → Many Decks
-	•	One Folder → Many Decks
-	•	One Deck → Many Cards
-	•	One Card → Exactly One CardSRS (One-to-One)
-	•	One User → Many ReviewSessions
+---
+
+### Relationships
+
+- One User → Many Folders
+- One User → Many Decks
+- One Folder → Many Decks
+- One Deck → Many Cards
+- One Card → Exactly One CardSRS (One-to-One)
+- One User → Many ReviewSessions
 
 ⸻
 
