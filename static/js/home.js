@@ -1,3 +1,5 @@
+/* jshint esversion: 6 */
+
 document.addEventListener("DOMContentLoaded", () => {
   const video = document.getElementById("heroVideo");
   const playButton = document.getElementById("overlayPlayHeroVideo");

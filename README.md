@@ -284,7 +284,12 @@ Validated:
 
 - JS → JSHint
 
+<img src="static/images/documentation/js_validation.png" alt="Screenshot of js validator">
+
 - Python → PEP8
+<img src="static/images/documentation/python_validator.png" alt="Screenshot of python validator">
+
+
 
 ---
 
