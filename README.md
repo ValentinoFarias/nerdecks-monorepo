@@ -2,7 +2,12 @@
 
 A spaced repetition web application that helps users remember information efficiently by reviewing cards at scientifically optimized intervals.
 
-<img src="static/images/landing_page_nerdecks.png" alt="Screenshot landing page nerdecks">
+
+
+<img src="static/images/responsivness_nerdecks.png" alt="Screenshot landing page nerdecks">
+
+
+https://nerdeck-981cca01cede.herokuapp.com/
 
 ---
 
@@ -20,24 +25,29 @@ A spaced repetition web application that helps users remember information effici
 ---
 
 # Design & Planning
+Before writing a single line of code, this project was shaped through intentional design decisions and structured planning. The goal was simple: build a focused learning tool that feels clean, intuitive, and distraction-free — but under the surface, is powered by solid logic.
+
+This section outlines how the idea was translated into concrete user stories, visual wireframes, an Agile workflow, and a clear data structure. Every feature began as a user need. Every screen started as a sketch. Every model existed for a reason.
 
 ## User Stories
 
 ### Core Learning Flow
-- As a user, I want to create an account so I can save my decks and cards.
-- As a user, I want to log in securely so I can access my personal learning material.
-- As a user, I want to create decks so I can organize topics.
-- As a user, I want to create cards inside decks so I can study specific content.
-- As a user, I want to review cards using spaced repetition so I can remember them long term.
-- As a user, I want to mark cards as correct or incorrect so the system can adjust review timing.
-- As a user, I want to see only my own decks and cards.
-- As a user, I want a clean and minimal interface so I can focus on studying.
+
+	•	As a user, I want a clear understanding of what the app does and how it helps me learn so I can decide whether to use it.
+	•	As a user, I want to create an account so I can save my decks and cards.
+	•	As a user, I want to log in securely so I can access my personal learning material.
+	•	As a user, I want to create decks so I can organize my study topics.
+	•	As a user, I want to create cards inside decks so I can break down topics into manageable pieces of information.
+	•	As a user, I want to review cards using spaced repetition so I can retain information long term.
+	•	As a user, I want to mark cards as correct or incorrect so the system can adjust future review timing automatically.
+	•	As a user, I want to see only my own decks and cards so my learning content remains private.
+	•	As a user, I want a clean and minimal interface so I can focus on studying without distractions.
 
 ---
 
 ## Wireframes
 
-For the design of the wire frame I used Adobe XD.
+For the wireframe design, I used Adobe XD to map out the structure and flow of the application before development began. This allowed me to visualize the user journey, test layout decisions, and ensure the interface remained clean and intuitive. By defining the core screens and interactions early on, I was able to align the visual structure with the project’s functional goals and maintain consistency throughout the build process.
 
 <img src="static/images/documentation/Wireframe.png" alt="NerDeck wireframe">
 
@@ -59,8 +69,7 @@ The project was developed using an iterative Agile approach:
   - Authentication
   - UI improvements
 
-Kanban board structure:
-- Backlog  
+Kanban board structure:  
 - To Do  
 - In Progress  
 - Testing  
@@ -103,26 +112,48 @@ Coolors.co was used as reference for quick colors pallete selection.
 
 ## Database Diagram
 
+Main Models & Relationships
+
+The application is built around a structured learning hierarchy with clear separation between content and learning logic.
+
 Main models:
+	•	Folder
+	•	Deck
+	•	Card
+	•	CardSRS
+	•	ReviewSession
+	•	(User – Django built-in model)
 
-- User (Django built-in)
-- Deck
-  - name
-  - user (ForeignKey → User)
+⸻
 
-- Card
-  - deck (ForeignKey → Deck)
-  - front
-  - back
-  - step
-  - due_at
-  - created_at
+Relationships
+	•	One User → Many Folders
+	•	One User → Many Decks
+	•	One Folder → Many Decks
+	•	One Deck → Many Cards
+	•	One Card → Exactly One CardSRS (One-to-One)
+	•	One User → Many ReviewSessions
 
-Relationships:
+⸻
 
-- One User → Many Decks  
-- One Deck → Many Cards  
-- One Card → Belongs to exactly one Deck  
+Model Overview
+
+Users organize their study material into Folders, which contain Decks representing topics.
+
+Each Deck contains multiple Cards, where the actual learning content is stored (front and back text).
+
+Every Card has a dedicated CardSRS model that stores its spaced repetition data — such as due date, interval, ease factor, repetitions, and lapses. This keeps the learning algorithm separate from the content itself.
+
+Finally, ReviewSession tracks study activity, linking sessions to users and recording when they start and end, as well as the study mode.
+
+⸻
+
+In summary, the structure follows a clear hierarchy:
+
+User → Folder → Deck → Card → SRS State
+Plus: User → Review Sessions
+
+This modular design keeps organization, learning logic, and tracking cleanly separated and scalable.
 
 <img src="static/images/documentation/erd_nerdecks.png" alt="Screenshot of NerDeck app ERD">
 
@@ -160,9 +191,11 @@ Relationships:
 - View deck
 - Delete deck
 
+
 ### Card
 - Create card
 - Review card
+- Update/Edit Card
 - Delete card
 
 Cards are filtered by logged-in user.
@@ -185,11 +218,18 @@ Cards are filtered by logged-in user.
 - HTML5
 - CSS3
 - Bootstrap 5
-- JavaScript (ES6 modules)
+- JavaScript 
 - SQLite (development)
 - PostgreSQL (production)
 - Heroku
 - Git & GitHub
+- Adobe XD
+- Adobe Premier Pro
+- Adobe Photoshop
+- Adobe Illustrator
+- Adobe Firefly
+_ ElevenLabs
+- NanoBanana 
 
 ---
 

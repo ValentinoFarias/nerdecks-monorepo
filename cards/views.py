@@ -52,7 +52,7 @@ def _step_from_interval(interval_days: int) -> int:
 
 
 # ---------------------------------------------------------------------------
-# Simple template‑only pages
+# Simple template‑only pages 
 # ---------------------------------------------------------------------------
 
 
