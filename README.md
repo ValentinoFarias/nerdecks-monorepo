@@ -276,8 +276,14 @@ Tested on:
 Validated:
 
 - HTML → W3C Validator
+<img src="static/images/documentation/html_validation_nerdecks.png" alt="Screenshot of html validation">
+
 - CSS → W3C Validator
+
+<img src="static/images/documentation/css_validation_nerdecks.png" alt="Screenshot of css validation">
+
 - JS → JSHint
+
 - Python → PEP8
 
 ---
