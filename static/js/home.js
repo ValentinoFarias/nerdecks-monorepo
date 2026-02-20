@@ -2,7 +2,6 @@
 
 document.addEventListener("DOMContentLoaded", () => {
   const video = document.getElementById("heroVideo");
-  const playButton = document.getElementById("overlayPlayHeroVideo");
   const heroTextTrigger = document.getElementById("heroTextTrigger");
 
   // When clicking the hero text: hide text, show video, auto-play
@@ -11,17 +10,18 @@ document.addEventListener("DOMContentLoaded", () => {
       heroTextTrigger.classList.add("d-none");
       video.classList.remove("d-none");
       video.play();
-      if (playButton) {
-        playButton.classList.add("d-none");
-      }
     });
   }
 
-  if (!video || !playButton) return;
+  if (!video) return;
 
-  playButton.addEventListener("click", () => {
-    video.play();
-    playButton.classList.add("d-none");
+  // Toggle pause/resume by clicking directly on the video.
+  video.addEventListener("click", () => {
+    if (video.paused) {
+      video.play();
+      return;
+    }
+    video.pause();
   });
 
   video.addEventListener("ended", () => {
@@ -33,8 +33,5 @@ document.addEventListener("DOMContentLoaded", () => {
     if (heroTextTrigger) {
       heroTextTrigger.classList.remove("d-none");
     }
-
-    // Keep the play button hidden since we are back to the text state
-    playButton.classList.add("d-none");
   });
 });

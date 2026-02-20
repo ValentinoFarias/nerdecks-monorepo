@@ -25,19 +25,21 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
   </head>
   <!-- Navbar -->
-  <body class="d-flex flex-column min-vh-100 bg-light">
-    <header class="border-bottom bg-white">
-      <div class="container d-flex align-items-center justify-content-between py-2">
-        <a href="{% url 'home' %}" class="d-flex align-items-center text-decoration-none">
-          <img
-            src="{% static 'images/newlogonerdecks.png' %}"
-            alt="NerDeck logo"
-            style="height: 50px; width: auto;"
-          >
-        </a>
-        <div class="d-flex gap-2">
-          <a href="{% url 'decks' %}" class="btn btn-primary scramble-text">Back to NerDecks</a>
-        </div>
+  <body class="new-flashcard-page d-flex flex-column min-vh-100 bg-light">
+    <header class="home-header py-3">
+      <div class="container">
+        <nav class="home-navbar" aria-label="Site navigation">
+          <a href="{% url 'home' %}" class="home-brand" aria-label="Nerdecks home">
+            <img
+              src="{% static 'images/newlogonerdecks.png' %}"
+              alt="Nerdecks logo"
+              class="home-brand-logo"
+            >
+          </a>
+          <div class="home-navbar-actions">
+            <a href="{% url 'decks' %}" class="btn btn-primary scramble-text">Back to NerDecks</a>
+          </div>
+        </nav>
       </div>
     </header>
 <!-- Main content -->

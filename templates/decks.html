@@ -30,20 +30,22 @@
 		<link rel="stylesheet" href="{% static 'css/style.css' %}?v=20260217-1">
 	</head>
 	<body class="d-flex flex-column min-vh-100 bg-light">
-		<!-- Top navigation bar with logo, Home and Logout buttons -->
-		<header class="border-bottom bg-white">
-			<div class="container d-flex align-items-center justify-content-between py-2">
-				<a href="{% url 'home' %}" class="d-flex align-items-center text-decoration-none">
-					<img
-						src="{% static 'images/newlogonerdecks.png' %}"
-						alt="NerDecks logo"
-						style="height: 50px; width: auto;"
-					>
-				</a>
-				<div class="d-flex gap-2">
-					<a href="{% url 'home' %}" class="btn btn-primary scramble-text">Home</a>
-					<a href="{% url 'logout' %}" class="btn btn-outline-secondary">Log out</a>
-				</div>
+		<!-- Top navigation bar -->
+		<header class="home-header py-3">
+			<div class="container">
+				<nav class="home-navbar" aria-label="Site navigation">
+					<a href="{% url 'home' %}" class="home-brand" aria-label="Nerdecks home">
+						<img
+							src="{% static 'images/newlogonerdecks.png' %}"
+							alt="Nerdecks logo"
+							class="home-brand-logo"
+						>
+					</a>
+					<div class="home-navbar-actions">
+						<a href="{% url 'home' %}" class="btn btn-primary scramble-text">Home</a>
+						<a href="{% url 'logout' %}" class="btn btn-outline-secondary">Log out</a>
+					</div>
+				</nav>
 			</div>
 		</header>
 
