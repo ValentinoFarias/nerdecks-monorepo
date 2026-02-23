@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from django.contrib.auth import views as auth_views
+from django.http import JsonResponse
 from cards.views import (
     LandingPageView,
     HomeView,
@@ -19,8 +20,12 @@ from cards.views import (
     delete_flashcard,
 )
 
+def health(request):
+    return JsonResponse({"status": "ok"})
+
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("api/health/", health, name="api_health"),
     path("home/", HomeView.as_view(), name="home"),
     path("decks/", DecksView.as_view(), name="decks"),
     path("decks/create/", create_deck, name="create_deck"),
